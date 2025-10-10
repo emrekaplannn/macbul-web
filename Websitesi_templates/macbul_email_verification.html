@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Email Doğrulama</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .verification-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .verification-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verification-header::before {
+            content: '📧';
+            position: absolute;
+            font-size: 12rem;
+            opacity: 0.1;
+            top: -3rem;
+            right: -3rem;
+            transform: rotate(-15deg);
+        }
+
+        .email-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .verification-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .verification-header p {
+            opacity: 0.95;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Content */
+        .verification-content {
+            padding: 2.5rem;
+        }
+
+        .sent-to {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .sent-to-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.3rem;
+        }
+
+        .sent-to-email {
+            font-weight: 600;
+            color: #17a2b8;
+            font-size: 1.05rem;
+        }
+
+        .instruction-text {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Code Input */
+        .code-inputs {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .code-input {
+            width: 55px;
+            height: 65px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .code-input:focus {
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+            transform: scale(1.05);
+        }
+
+        .code-input.filled {
+            border-color: #17a2b8;
+            background: #e8f8f9;
+        }
+
+        .code-input.error {
+            border-color: #dc3545;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        /* Verify Button */
+        .verify-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        .verify-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .verify-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .verify-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Resend Section */
+        .resend-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .resend-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .resend-timer {
+            color: #17a2b8;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .resend-btn {
+            background: transparent;
+            color: #17a2b8;
+            border: 2px solid #17a2b8;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .resend-btn:hover:not(:disabled) {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Change Email */
+        .change-email {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .change-email-btn {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .change-email-btn:hover {
+            color: #17a2b8;
+            text-decoration: underline;
+        }
+
+        /* Help Box */
+        .help-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .help-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .help-text {
+            color: #6c757d;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .success-screen.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: bounceIn 0.8s;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success-screen h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .success-screen p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .continue-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .continue-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .verification-container {
+                max-width: 100%;
+            }
+
+            .verification-header {
+                padding: 2rem 1.5rem 1.5rem;
+            }
+
+            .verification-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .verification-content {
+                padding: 1.5rem;
+            }
+
+            .code-inputs {
+                gap: 0.5rem;
+            }
+
+            .code-input {
+                width: 45px;
+                height: 55px;
+                font-size: 1.5rem;
+            }
+
+            .email-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <!-- Header -->
+        <div class="verification-header">
+            <div class="email-icon">📧</div>
+            <h1>Email Adresini Doğrula</h1>
+            <p>Hesabını güvence altına al</p>
+        </div>
+
+        <!-- Content -->
+        <div class="verification-content" id="verificationContent">
+            <div class="sent-to">
+                <div class="sent-to-label">Doğrulama kodu gönderildi</div>
+                <div class="sent-to-email">ahmet.yilmaz@email.com</div>
+            </div>
+
+            <p class="instruction-text">
+                Email adresine gönderilen 6 haneli doğrulama kodunu aşağıdaki alana gir.
+            </p>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <span>❌</span>
+                <span>Hatalı kod! Lütfen tekrar dene.</span>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <span>✅</span>
+                <span>Kod doğrulandı! Yönlendiriliyorsun...</span>
+            </div>
+
+            <!-- Code Inputs -->
+            <div class="code-inputs">
+                <input type="text" class="code-input" maxlength="1" data-index="0" autofocus>
+                <input type="text" class="code-input" maxlength="1" data-index="1">
+                <input type="text" class="code-input" maxlength="1" data-index="2">
+                <input type="text" class="code-input" maxlength="1" data-index="3">
+                <input type="text" class="code-input" maxlength="1" data-index="4">
+                <input type="text" class="code-input" maxlength="1" data-index="5">
+            </div>
+
+            <!-- Verify Button -->
+            <button class="verify-btn" id="verifyBtn" disabled>
+                Doğrula
+            </button>
+
+            <!-- Resend Section -->
+            <div class="resend-section">
+                <div class="resend-text">Kod gelmedi mi?</div>
+                <div class="resend-timer" id="resendTimer">
+                    Yeniden gönder (60s)
+                </div>
+                <button class="resend-btn" id="resendBtn" disabled>
+                    📧 Kodu Tekrar Gönder
+                </button>
+            </div>
+
+            <!-- Change Email -->
+            <div class="change-email">
+                <a href="#" class="change-email-btn">Email adresini değiştir</a>
+            </div>
+
+            <!-- Help Box -->
+            <div class="help-box">
+                <div class="help-title">💡 Yardım</div>
+                <div class="help-text">
+                    • Email gelmediyse spam/gereksiz klasörünü kontrol et<br>
+                    • Kod 10 dakika geçerlidir<br>
+                    • Sorun yaşıyorsan destek ekibimizle iletişime geç
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="success-screen" id="successScreen">
+            <div class="success-icon">🎉</div>
+            <h2>Email Doğrulandı!</h2>
+            <p>
+                Harika! Email adresin başarıyla doğrulandı.<br>
+                Artık MaçBul'u kullanmaya hazırsın.
+            </p>
+            <button class="continue-btn" onclick="continueToApp()">
+                Devam Et →
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const codeInputs = document.querySelectorAll('.code-input');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        let resendCountdown = 60;
+        let countdownInterval;
+
+        // Correct code for demo (in real app, verify on backend)
+        const correctCode = '123456';
+
+        // Auto-focus and input handling
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+
+                // Only allow numbers
+                if (!/^\d*$/.test(value)) {
+                    e.target.value = '';
+                    return;
+                }
+
+                if (value) {
+                    input.classList.add('filled');
+                    
+                    // Auto focus next input
+                    if (index < 5) {
+                        codeInputs[index + 1].focus();
+                    }
+                } else {
+                    input.classList.remove('filled');
+                }
+
+                // Check if all inputs are filled
+                checkAllFilled();
+            });
+
+            // Handle backspace
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+
+            // Handle paste
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').trim();
+                
+                if (/^\d{6}$/.test(pastedData)) {
+                    pastedData.split('').forEach((char, i) => {
+                        if (codeInputs[i]) {
+                            codeInputs[i].value = char;
+                            codeInputs[i].classList.add('filled');
+                        }
+                    });
+                    checkAllFilled();
+                }
+            });
+        });
+
+        // Check if all inputs are filled
+        function checkAllFilled() {
+            const allFilled = Array.from(codeInputs).every(input => input.value !== '');
+            verifyBtn.disabled = !allFilled;
+            
+            if (allFilled) {
+                // Auto verify after a short delay
+                setTimeout(() => {
+                    verifyCode();
+                }, 300);
+            }
+        }
+
+        // Verify code
+        function verifyCode() {
+            const code = Array.from(codeInputs).map(input => input.value).join('');
+            
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            
+            verifyBtn.classList.add('loading');
+            verifyBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                verifyBtn.classList.remove('loading');
+                
+                if (code === correctCode) {
+                    // Success
+                    successMessage.classList.add('show');
+                    codeInputs.forEach(input => {
+                        input.style.borderColor = '#28a745';
+                        input.disabled = true;
+                    });
+                    
+                    setTimeout(() => {
+                        showSuccessScreen();
+                    }, 1500);
+                } else {
+                    // Error
+                    errorMessage.classList.add('show');
+                    codeInputs.forEach(input => {
+                        input.classList.add('error');
+                        input.value = '';
+                        input.classList.remove('filled');
+                    });
+                    
+                    setTimeout(() => {
+                        codeInputs.forEach(input => input.classList.remove('error'));
+                        codeInputs[0].focus();
+                    }, 500);
+                    
+                    verifyBtn.disabled = true;
+                }
+            }, 1500);
+        }
+
+        // Verify button click
+        verifyBtn.addEventListener('click', verifyCode);
+
+        // Show success screen
+        function showSuccessScreen() {
+            document.getElementById('verificationContent').style.display = 'none';
+            document.getElementById('successScreen').classList.add('show');
+        }
+
+        // Continue to app
+        function continueToApp() {
+            alert('Profil kurulum sayfasına yönlendiriliyorsun...');
+            // window.location.href = '/profile-setup';
+        }
+
+        // Resend countdown
+        function startCountdown() {
+            resendCountdown = 60;
+            document.getElementById('resendBtn').disabled = true;
+            
+            countdownInterval = setInterval(() => {
+                resendCountdown--;
+                document.getElementById('resendTimer').textContent = `Yeniden gönder (${resendCountdown}s)`;
+                
+                if (resendCountdown <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('resendTimer').style.display = 'none';
+                    document.getElementById('resendBtn').disabled = false;
+                }
+            }, 1000);
+        }
+
+        // Resend code
+        document.getElementById('resendBtn').addEventListener('click', function() {
+            this.classList.add('loading');
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.classList.remove('loading');
+                alert('✅ Doğrulama kodu tekrar gönderildi!\n\nEmail adresinizi kontrol edin.');
+                startCountdown();
+                
+                // Clear inputs
+                codeInputs.forEach(input => {
+                    input.value = '';
+                    input.classList.remove('filled');
+                    input.disabled = false;
+                });
+                codeInputs[0].focus();
+            }, 1000);
+        });
+
+        // Change email
+        document.querySelector('.change-email-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Email adresini değiştirmek istediğine emin misin?\n\nKayıt sayfasına geri dönülecek.')) {
+                alert('Kayıt sayfasına yönlendiriliyorsun...');
+                // window.location.href = '/signup';
+            }
+        });
+
+        // Start countdown on load
+        startCountdown();
+
+        // Auto-focus first input
+        codeInputs[0].focus();
+    </script>
+</body>
+</html>

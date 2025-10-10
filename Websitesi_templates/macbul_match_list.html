@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Maçları Keşfet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .balance {
+            background: #e8f8f9;
+            color: #17a2b8;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Search and Filters */
+        .search-filter-bar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-btn.active {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.6rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #17a2b8;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-chip {
+            background: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .stat-chip span {
+            color: #17a2b8;
+        }
+
+        /* Match Grid */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Match Card */
+        .match-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .match-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-date {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .match-day {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .match-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .match-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .match-body {
+            padding: 1.5rem;
+        }
+
+        .venue-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .venue-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .match-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .match-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .players-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .join-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .join-btn:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+
+        .join-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-filling {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-full {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #17a2b8;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .matches-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">MaçBul</a>
+            <div class="user-info">
+                <div class="balance">₺120,50</div>
+                <div class="user-avatar">AY</div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Maçları Keşfet</h1>
+            <p>Yakınındaki açık maçları bul ve hemen katıl</p>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="search-filter-bar">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Saha adı veya konum ara...">
+                <div class="view-toggle">
+                    <button class="view-btn active">📋 Liste</button>
+                    <button class="view-btn">🗺️ Harita</button>
+                </div>
+            </div>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Tarih</label>
+                    <select class="filter-select">
+                        <option>Tüm Tarihler</option>
+                        <option>Bugün</option>
+                        <option>Yarın</option>
+                        <option>Bu Hafta</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>İlçe</label>
+                    <select class="filter-select">
+                        <option>Tüm İlçeler</option>
+                        <option>Kadıköy</option>
+                        <option>Beşiktaş</option>
+                        <option>Şişli</option>
+                        <option>Üsküdar</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Fiyat</label>
+                    <select class="filter-select">
+                        <option>Tüm Fiyatlar</option>
+                        <option>₺0 - ₺50</option>
+                        <option>₺50 - ₺100</option>
+                        <option>₺100+</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Durum</label>
+                    <select class="filter-select">
+                        <option>Tümü</option>
+                        <option>Müsait</option>
+                        <option>Dolmak Üzere</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-chip"><span>24</span> Açık Maç</div>
+            <div class="stat-chip"><span>12</span> Bugün</div>
+            <div class="stat-chip"><span>8</span> Yakınınızda</div>
+        </div>
+
+        <!-- Matches Grid -->
+        <div class="matches-grid">
+            <!-- Match Card 1 -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">21 Mart 2024</span>
+                        <span class="match-time">20:00</span>
+                    </div>
+                    <div class="match-price">₺75</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Çamlık Halı Saha</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Kadıköy, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>60 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-available">Müsait</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>8/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn">Katıl</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Card 2 -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">21 Mart 2024</span>
+                        <span class="match-time">19:00</span>
+                    </div>
+                    <div class="match-price">₺80</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Fenerbahçe Spor Tesisi</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Kadıköy, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>60 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-filling">Dolmak Üzere</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>12/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn">Katıl</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Card 3 -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">22 Mart 2024</span>
+                        <span class="match-time">18:30</span>
+                    </div>
+                    <div class="match-price">₺65</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Moda Halı Saha</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Kadıköy, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>60 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-available">Müsait</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>6/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn">Katıl</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Card 4 -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">22 Mart 2024</span>
+                        <span class="match-time">21:00</span>
+                    </div>
+                    <div class="match-price">₺90</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Acıbadem Sports Arena</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Üsküdar, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>90 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-available">Müsait</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>10/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn">Katıl</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Card 5 - Full -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">21 Mart 2024</span>
+                        <span class="match-time">17:00</span>
+                    </div>
+                    <div class="match-price">₺70</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Bostancı Halı Saha</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Kadıköy, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>60 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-full">Dolu</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>14/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn" disabled>Dolu</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Card 6 -->
+            <div class="match-card">
+                <div class="match-header">
+                    <div class="match-date">
+                        <span class="match-day">23 Mart 2024</span>
+                        <span class="match-time">20:30</span>
+                    </div>
+                    <div class="match-price">₺85</div>
+                </div>
+                <div class="match-body">
+                    <h3 class="venue-name">Suadiye Spor Kompleksi</h3>
+                    <div class="venue-location">
+                        <span>📍</span>
+                        <span>Kadıköy, İstanbul</span>
+                    </div>
+                    <div class="match-info">
+                        <div class="info-item">
+                            <span>⚽</span>
+                            <span>Halı Saha</span>
+                        </div>
+                        <div class="info-item">
+                            <span>⏱️</span>
+                            <span>60 dakika</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="status-badge status-available">Müsait</span>
+                        </div>
+                    </div>
+                    <div class="match-footer">
+                        <div class="players-count">
+                            <span>👥</span>
+                            <span>5/14 Oyuncu</span>
+                        </div>
+                        <button class="join-btn">Katıl</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple interactive features
+        document.querySelectorAll('.match-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('join-btn')) {
+                    // Navigate to match detail page
+                    console.log('Navigate to match detail');
+                }
+            });
+        });
+
+        document.querySelectorAll('.join-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!this.disabled) {
+                    alert('Maça katılım işlemi başlatılıyor...');
+                }
+            });
+        });
+
+        // View toggle
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                if (this.textContent.includes('Harita')) {
+                    alert('Harita görünümü yakında eklenecek!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

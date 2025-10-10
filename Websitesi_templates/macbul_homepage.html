@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Halı Saha Maçını Bul, Hemen Katıl</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #17a2b8;
+        }
+
+        .cta-button {
+            background: #17a2b8;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #17a2b8;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border: 2px solid white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid white;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .feature-card p {
+            color: #6c757d;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .step p {
+            color: #6c757d;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .stats-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat h3 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 2rem;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: #17a2b8;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #bbb;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #17a2b8;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            color: #bbb;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">MaçBul</div>
+            <ul class="nav-links">
+                <li><a href="#ozellikler">Özellikler</a></li>
+                <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>
+                <li><a href="#hakkimizda">Hakkımızda</a></li>
+            </ul>
+            <a href="#" class="cta-button">Giriş Yap</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Halı Saha Maçını Bul, Hemen Katıl</h1>
+            <p>Yakınındaki açık maçları keşfet, tek tıkla kaydol ve sahaya in. Yeni takım arkadaşları bul, futbol keyfini yaşa.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-primary">Hemen Başla</a>
+                <a href="#nasil-calisir" class="btn-secondary">Nasıl Çalışır?</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="ozellikler" class="features">
+        <div class="features-container">
+            <h2 class="section-title">Neden MaçBul?</h2>
+            <p class="section-subtitle">Futbol oynamayı seven herkes için en kolay çözüm</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h3>Yakınındaki Maçlar</h3>
+                    <p>Konumuna göre en yakın açık maçları görüntüle, harita üzerinden sahaları keşfet.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Anında Katılım</h3>
+                    <p>Tek tıkla maça kaydol, ödeme yap ve hazır ol. Kolay ve hızlı.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>Dengeli Takımlar</h3>
+                    <p>Overall puanlama sistemi ile dengeli ve rekabetçi takımlar otomatik oluşturulur.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💳</div>
+                    <h3>Güvenli Ödeme</h3>
+                    <p>Cüzdan sistemi ile güvenli ödeme, kolay bakiye yönetimi ve otomatik iadeler.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Performans Takibi</h3>
+                    <p>Maç sonrası puanlama, istatistikler ve gelişimini takip et.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎥</div>
+                    <h3>Maç Videoları</h3>
+                    <p>Maç anlarını kaydet, gol kesitlerini izle ve paylaş.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="nasil-calisir" class="how-it-works">
+        <div class="steps-container">
+            <h2 class="section-title">Nasıl Çalışır?</h2>
+            <p class="section-subtitle">3 adımda sahada olabilirsin</p>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Kaydol</h3>
+                    <p>Hızlı kayıt ol, profilini oluştur ve cüzdanına bakiye yükle.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Maç Bul</h3>
+                    <p>Yakınındaki açık maçları keşfet, tarih ve konuma göre filtrele.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Sahaya İn</h3>
+                    <p>Tek tıkla katıl, ödeme yap ve takım arkadaşlarınla tanış.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat">
+                <h3>5000+</h3>
+                <p>Aktif Kullanıcı</p>
+            </div>
+            <div class="stat">
+                <h3>1200+</h3>
+                <p>Tamamlanan Maç</p>
+            </div>
+            <div class="stat">
+                <h3>50+</h3>
+                <p>Halı Saha</p>
+            </div>
+            <div class="stat">
+                <h3>4.8/5</h3>
+                <p>Kullanıcı Puanı</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Bugün Sahaya Çıkmaya Hazır mısın?</h2>
+            <p>Hemen kaydol, yakınındaki maçları keşfet ve futbol tutkunu paylaş.</p>
+            <a href="#" class="btn-primary">Ücretsiz Kaydol</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>MaçBul</h4>
+                <p>Türkiye'nin en büyük halı saha maç bulma platformu.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Hızlı Linkler</h4>
+                <ul>
+                    <li><a href="#">Hakkımızda</a></li>
+                    <li><a href="#">Nasıl Çalışır</a></li>
+                    <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                    <li><a href="#">İletişim</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Destek</h4>
+                <ul>
+                    <li><a href="#">Yardım Merkezi</a></li>
+                    <li><a href="#">Kullanım Koşulları</a></li>
+                    <li><a href="#">Gizlilik Politikası</a></li>
+                    <li><a href="#">Güvenlik</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Bize Ulaşın</h4>
+                <ul>
+                    <li><a href="mailto:info@macbul.com">info@macbul.com</a></li>
+                    <li><a href="tel:+905551234567">+90 555 123 45 67</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MaçBul. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+</body>
+</html>

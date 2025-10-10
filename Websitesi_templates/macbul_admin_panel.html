@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Admin Paneli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6fa;
+            color: #333;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #17a2b8;
+        }
+
+        .logo span {
+            font-size: 0.85rem;
+            color: #95a5a6;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 0.9rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #17a2b8;
+        }
+
+        .nav-item.active {
+            background: rgba(23,162,184,0.2);
+            border-left-color: #17a2b8;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: #2c3e50;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            background: #17a2b8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.blue { background: rgba(23,162,184,0.1); }
+        .stat-icon.green { background: rgba(40,167,69,0.1); }
+        .stat-icon.orange { background: rgba(255,193,7,0.1); }
+        .stat-icon.red { background: rgba(220,53,69,0.1); }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        .stat-info p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Content Section */
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .section-header h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #138496;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-control {
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #17a2b8;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            background: none;
+            border: none;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Charts placeholder */
+        .chart-container {
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar .form-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Feedback Card */
+        .feedback-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .feedback-user {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .feedback-date {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .feedback-content {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+
+        .feedback-rating {
+            color: #ffc107;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1>MaçBul</h1>
+            <span>Admin Paneli</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active" data-section="dashboard">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" data-section="matches">
+                <span>⚽</span>
+                <span>Maç Yönetimi</span>
+            </li>
+            <li class="nav-item" data-section="users">
+                <span>👥</span>
+                <span>Kullanıcı Yönetimi</span>
+            </li>
+            <li class="nav-item" data-section="wallets">
+                <span>💰</span>
+                <span>Cüzdan Yönetimi</span>
+            </li>
+            <li class="nav-item" data-section="feedbacks">
+                <span>💬</span>
+                <span>Geri Bildirimler</span>
+            </li>
+            <li class="nav-item" data-section="analytics">
+                <span>📈</span>
+                <span>Analitik</span>
+            </li>
+            <li class="nav-item" data-section="settings">
+                <span>⚙️</span>
+                <span>Ayarlar</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h2 id="page-title">Dashboard</h2>
+            <div class="admin-info">
+                <div>
+                    <strong>Admin</strong>
+                    <div style="font-size: 0.85rem; color: #6c757d;">admin@macbul.com</div>
+                </div>
+                <div class="admin-avatar">AD</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="content-section active" id="dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">⚽</div>
+                    <div class="stat-info">
+                        <h3>247</h3>
+                        <p>Toplam Maç</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">👥</div>
+                    <div class="stat-info">
+                        <h3>1,543</h3>
+                        <p>Aktif Kullanıcı</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">💰</div>
+                    <div class="stat-info">
+                        <h3>₺45,890</h3>
+                        <p>Toplam Gelir</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">📊</div>
+                    <div class="stat-info">
+                        <h3>89%</h3>
+                        <p>Doluluk Oranı</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <p>📊 Haftalık Maç İstatistikleri Grafiği</p>
+            </div>
+
+            <div class="section-header">
+                <h3>Son Aktiviteler</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>Aktivite</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ali Yılmaz</td>
+                        <td>Maça katıldı</td>
+                        <td>21 Mart 2024, 14:30</td>
+                        <td><span class="badge badge-success">Tamamlandı</span></td>
+                    </tr>
+                    <tr>
+                        <td>Mehmet Kaya</td>
+                        <td>Cüzdan yükleme</td>
+                        <td>21 Mart 2024, 14:15</td>
+                        <td><span class="badge badge-success">Başarılı</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ayşe Demir</td>
+                        <td>Maç oluşturdu</td>
+                        <td>21 Mart 2024, 13:45</td>
+                        <td><span class="badge badge-info">Aktif</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Matches Section -->
+        <div class="content-section" id="matches">
+            <div class="section-header">
+                <h3>Maç Yönetimi</h3>
+                <button class="btn btn-primary" onclick="openMatchModal()">➕ Yeni Maç Oluştur</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" class="form-control" placeholder="Maç ara...">
+                <select class="form-control">
+                    <option>Tüm Durumlar</option>
+                    <option>Açık</option>
+                    <option>Dolu</option>
+                    <option>Tamamlandı</option>
+                </select>
+                <select class="form-control">
+                    <option>Tüm Tarihler</option>
+                    <option>Bugün</option>
+                    <option>Bu Hafta</option>
+                </select>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Saha</th>
+                        <th>Tarih & Saat</th>
+                        <th>Konum</th>
+                        <th>Fiyat</th>
+                        <th>Oyuncular</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Çamlık Halı Saha</strong></td>
+                        <td>21 Mart 2024, 20:00</td>
+                        <td>Kadıköy, İstanbul</td>
+                        <td>₺75</td>
+                        <td>8/14</td>
+                        <td><span class="badge badge-success">Açık</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editMatch(1)">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMatch(1)">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fenerbahçe Spor Tesisi</strong></td>
+                        <td>21 Mart 2024, 19:00</td>
+                        <td>Kadıköy, İstanbul</td>
+                        <td>₺80</td>
+                        <td>12/14</td>
+                        <td><span class="badge badge-warning">Dolmak Üzere</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editMatch(2)">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMatch(2)">🗑️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bostancı Halı Saha</strong></td>
+                        <td>21 Mart 2024, 17:00</td>
+                        <td>Kadıköy, İstanbul</td>
+                        <td>₺70</td>
+                        <td>14/14</td>
+                        <td><span class="badge badge-danger">Dolu</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editMatch(3)">✏️</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMatch(3)">🗑️</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Users Section -->
+        <div class="content-section" id="users">
+            <div class="section-header">
+                <h3>Kullanıcı Yönetimi</h3>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" class="form-control" placeholder="Kullanıcı ara...">
+                <select class="form-control">
+                    <option>Tüm Durumlar</option>
+                    <option>Aktif</option>
+                    <option>Yasaklı</option>
+                    <option>Askıda</option>
+                </select>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>E-posta</th>
+                        <th>Telefon</th>
+                        <th>Cüzdan</th>
+                        <th>Maç Sayısı</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ali Yılmaz</strong></td>
+                        <td>ali@example.com</td>
+                        <td>0532 123 4567</td>
+                        <td>₺120,50</td>
+                        <td>23</td>
+                        <td><span class="badge badge-success">Aktif</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editUser(1)">✏️</button>
+                            <button class="btn btn-sm btn-warning" onclick="suspendUser(1)">⏸️</button>
+                            <button class="btn btn-sm btn-danger" onclick="banUser(1)">🚫</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mehmet Kaya</strong></td>
+                        <td>mehmet@example.com</td>
+                        <td>0533 234 5678</td>
+                        <td>₺85,00</td>
+                        <td>15</td>
+                        <td><span class="badge badge-success">Aktif</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editUser(2)">✏️</button>
+                            <button class="btn btn-sm btn-warning" onclick="suspendUser(2)">⏸️</button>
+                            <button class="btn btn-sm btn-danger" onclick="banUser(2)">🚫</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ahmet Çelik</strong></td>
+                        <td>ahmet@example.com</td>
+                        <td>0534 345 6789</td>
+                        <td>₺0,00</td>
+                        <td>8</td>
+                        <td><span class="badge badge-danger">Yasaklı</span></td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="editUser(3)">✏️</button>
+                            <button class="btn btn-sm btn-success" onclick="unbanUser(3)">✅</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Wallets Section -->
+        <div class="content-section" id="wallets">
+            <div class="section-header">
+                <h3>Cüzdan Yönetimi</h3>
+                <button class="btn btn-success" onclick="openWalletModal()">💰 Bakiye İşlemi</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" class="form-control" placeholder="Kullanıcı ara...">
+                <select class="form-control">
+                    <option>Tüm İşlemler</option>
+                    <option>Yükleme</option>
+                    <option>Harcama</option>
+                    <option>İade</option>
+                </select>
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>İşlem Tipi</th>
+                        <th>Miktar</th>
+                        <th>Önceki Bakiye</th>
+                        <th>Yeni Bakiye</th>
+                        <th>Tarih</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ali Yılmaz</strong></td>
+                        <td><span class="badge badge-success">Yükleme</span></td>
+                        <td>+₺100,00</td>
+                        <td>₺20,50</td>
+                        <td>₺120,50</td>
+                        <td>21 Mart 2024, 14:30</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="viewTransaction(1)">👁️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mehmet Kaya</strong></td>
+                        <td><span class="badge badge-warning">Harcama</span></td>
+                        <td>-₺75,00</td>
+                        <td>₺160,00</td>
+                        <td>₺85,00</td>
+                        <td>21 Mart 2024, 13:15</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="viewTransaction(2)">👁️</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ayşe Demir</strong></td>
+                        <td><span class="badge badge-info">İade</span></td>
+                        <td>+₺80,00</td>
+                        <td>₺45,00</td>
+                        <td>₺125,00</td>
+                        <td>21 Mart 2024, 12:00</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-sm btn-primary" onclick="viewTransaction(3)">👁️</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Feedbacks Section -->
+        <div class="content-section" id="feedbacks">
+            <div class="section-header">
+                <h3>Geri Bildirimler</h3>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" class="form-control" placeholder="Ara...">
+                <select class="form-control">
+                    <option>Tüm Puanlar</option>
+                    <option>⭐⭐⭐⭐⭐ (5 Yıldız)</option>
+                    <option>⭐⭐⭐⭐ (4 Yıldız)</option>
+                    <option>⭐⭐⭐ (3 Yıldız)</option>
+                    <option>⭐⭐ (2 Yıldız)</option>
+                    <option>⭐ (1 Yıldız)</option>
+                </select>
+                <select class="form-control">
+                    <option>Tüm Durumlar</option>
+                    <option>Yeni</option>
+                    <option>İncelendi</option>
+                    <option>Çözüldü</option>
+                </select>
+            </div>
+
+            <div class="feedback-card">
+                <div class="feedback-header">
+                    <div>
+                        <span class="feedback-user">Ali Yılmaz</span>
+                        <span class="feedback-rating">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <span class="feedback-date">21 Mart 2024, 15:30</span>
+                </div>
+                <div class="feedback-content">
+                    Uygulama çok kullanışlı ve maç bulmak çok kolay. Arayüz tasarımı başarılı. Teşekkürler!
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-success" onclick="markResolved(1)">✅ Çözüldü</button>
+                    <button class="btn btn-sm btn-primary" onclick="respondFeedback(1)">💬 Yanıtla</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteFeedback(1)">🗑️ Sil</button>
+                </div>
+            </div>
+
+            <div class="feedback-card">
+                <div class="feedback-header">
+                    <div>
+                        <span class="feedback-user">Mehmet Kaya</span>
+                        <span class="feedback-rating">⭐⭐⭐⭐</span>
+                    </div>
+                    <span class="feedback-date">20 Mart 2024, 18:45</span>
+                </div>
+                <div class="feedback-content">
+                    Genel olarak memnunum ama bazen bildirimlerin geç geldiğini düşünüyorum. Bu konuda iyileştirme yapılabilir.
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-success" onclick="markResolved(2)">✅ Çözüldü</button>
+                    <button class="btn btn-sm btn-primary" onclick="respondFeedback(2)">💬 Yanıtla</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteFeedback(2)">🗑️ Sil</button>
+                </div>
+            </div>
+
+            <div class="feedback-card">
+                <div class="feedback-header">
+                    <div>
+                        <span class="feedback-user">Ayşe Demir</span>
+                        <span class="feedback-rating">⭐⭐</span>
+                    </div>
+                    <span class="feedback-date">19 Mart 2024, 12:20</span>
+                </div>
+                <div class="feedback-content">
+                    Ödeme sisteminde sorun yaşadım. Cüzdanıma para yükleyemedim. Lütfen bu sorunu çözün.
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-sm btn-success" onclick="markResolved(3)">✅ Çözüldü</button>
+                    <button class="btn btn-sm btn-primary" onclick="respondFeedback(3)">💬 Yanıtla</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteFeedback(3)">🗑️ Sil</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="content-section" id="analytics">
+            <div class="section-header">
+                <h3>Sistem Analitikleri</h3>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">📊</div>
+                    <div class="stat-info">
+                        <h3>892</h3>
+                        <p>Aylık Maç</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">📈</div>
+                    <div class="stat-info">
+                        <h3>+24%</h3>
+                        <p>Büyüme Oranı</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">💵</div>
+                    <div class="stat-info">
+                        <h3>₺156,340</h3>
+                        <p>Aylık Gelir</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red">⭐</div>
+                    <div class="stat-info">
+                        <h3>4.6/5</h3>
+                        <p>Ortalama Puan</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <p>📈 Aylık Gelir Grafiği</p>
+            </div>
+
+            <div class="chart-container">
+                <p>👥 Kullanıcı Büyüme Grafiği</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="chart-container" style="height: 250px;">
+                    <p>🕐 En Popüler Saatler</p>
+                </div>
+                <div class="chart-container" style="height: 250px;">
+                    <p>📍 En Popüler Bölgeler</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="content-section" id="settings">
+            <div class="section-header">
+                <h3>Sistem Ayarları</h3>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Platform Komisyonu (%)</label>
+                    <input type="number" class="form-control" value="15" placeholder="Komisyon oranı">
+                </div>
+                <div class="form-group">
+                    <label>Minimum Bakiye (₺)</label>
+                    <input type="number" class="form-control" value="10" placeholder="Minimum bakiye">
+                </div>
+                <div class="form-group">
+                    <label>Maksimum İptal Süresi (saat)</label>
+                    <input type="number" class="form-control" value="24" placeholder="İptal süresi">
+                </div>
+                <div class="form-group">
+                    <label>İptal Ücreti (%)</label>
+                    <input type="number" class="form-control" value="10" placeholder="İptal ücreti">
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem; color: #2c3e50;">Bildirim Ayarları</h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" checked style="width: 20px; height: 20px;">
+                        <span>E-posta bildirimleri</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" checked style="width: 20px; height: 20px;">
+                        <span>SMS bildirimleri</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" checked style="width: 20px; height: 20px;">
+                        <span>Push bildirimleri</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" style="width: 20px; height: 20px;">
+                        <span>Maç hatırlatıcıları</span>
+                    </label>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <button class="btn btn-success">💾 Ayarları Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Modal -->
+    <div class="modal" id="matchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Maç Oluştur</h3>
+                <button class="close-btn" onclick="closeMatchModal()">×</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Saha Adı *</label>
+                    <input type="text" class="form-control" placeholder="Örn: Çamlık Halı Saha">
+                </div>
+                <div class="form-group">
+                    <label>İlçe *</label>
+                    <select class="form-control">
+                        <option>Seçiniz...</option>
+                        <option>Kadıköy</option>
+                        <option>Beşiktaş</option>
+                        <option>Şişli</option>
+                        <option>Üsküdar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tarih *</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Saat *</label>
+                    <input type="time" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Süre (dakika) *</label>
+                    <input type="number" class="form-control" placeholder="60">
+                </div>
+                <div class="form-group">
+                    <label>Fiyat (₺) *</label>
+                    <input type="number" class="form-control" placeholder="75">
+                </div>
+                <div class="form-group">
+                    <label>Maksimum Oyuncu *</label>
+                    <input type="number" class="form-control" placeholder="14">
+                </div>
+                <div class="form-group">
+                    <label>Saha Tipi *</label>
+                    <select class="form-control">
+                        <option>Halı Saha</option>
+                        <option>Çim Saha</option>
+                        <option>Sentetik</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 1rem;">
+                <label>Açıklama</label>
+                <textarea class="form-control" placeholder="Maç hakkında ek bilgiler..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeMatchModal()">İptal</button>
+                <button class="btn btn-primary" onclick="saveMatch()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wallet Modal -->
+    <div class="modal" id="walletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cüzdan İşlemi</h3>
+                <button class="close-btn" onclick="closeWalletModal()">×</button>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Kullanıcı Seç *</label>
+                    <select class="form-control">
+                        <option>Seçiniz...</option>
+                        <option>Ali Yılmaz</option>
+                        <option>Mehmet Kaya</option>
+                        <option>Ayşe Demir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>İşlem Tipi *</label>
+                    <select class="form-control">
+                        <option>Yükleme</option>
+                        <option>Kesinti</option>
+                        <option>İade</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Miktar (₺) *</label>
+                    <input type="number" class="form-control" placeholder="100">
+                </div>
+            </div>
+            <div class="form-group" style="margin-top: 1rem;">
+                <label>Açıklama *</label>
+                <textarea class="form-control" placeholder="İşlem açıklaması..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeWalletModal()">İptal</button>
+                <button class="btn btn-success" onclick="processWallet()">İşlemi Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const section = this.dataset.section;
+                
+                // Update active nav
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+                
+                // Update page title
+                const titles = {
+                    'dashboard': 'Dashboard',
+                    'matches': 'Maç Yönetimi',
+                    'users': 'Kullanıcı Yönetimi',
+                    'wallets': 'Cüzdan Yönetimi',
+                    'feedbacks': 'Geri Bildirimler',
+                    'analytics': 'Sistem Analitikleri',
+                    'settings': 'Sistem Ayarları'
+                };
+                document.getElementById('page-title').textContent = titles[section];
+            });
+        });
+
+        // Match Modal
+        function openMatchModal() {
+            document.getElementById('matchModal').classList.add('active');
+        }
+
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.remove('active');
+        }
+
+        function saveMatch() {
+            alert('Maç başarıyla oluşturuldu!');
+            closeMatchModal();
+        }
+
+        function editMatch(id) {
+            alert('Maç #' + id + ' düzenleniyor...');
+            openMatchModal();
+        }
+
+        function deleteMatch(id) {
+            if (confirm('Bu maçı silmek istediğinizden emin misiniz?')) {
+                alert('Maç #' + id + ' silindi.');
+            }
+        }
+
+        // Wallet Modal
+        function openWalletModal() {
+            document.getElementById('walletModal').classList.add('active');
+        }
+
+        function closeWalletModal() {
+            document.getElementById('walletModal').classList.remove('active');
+        }
+
+        function processWallet() {
+            alert('Cüzdan işlemi başarıyla tamamlandı!');
+            closeWalletModal();
+        }
+
+        function viewTransaction(id) {
+            alert('İşlem #' + id + ' detayları gösteriliyor...');
+        }
+
+        // User Actions
+        function editUser(id) {
+            alert('Kullanıcı #' + id + ' düzenleniyor...');
+        }
+
+        function suspendUser(id) {
+            if (confirm('Bu kullanıcıyı askıya almak istediğinizden emin misiniz?')) {
+                alert('Kullanıcı #' + id + ' askıya alındı.');
+            }
+        }
+
+        function banUser(id) {
+            if (confirm('Bu kullanıcıyı yasaklamak istediğinizden emin misiniz?')) {
+                alert('Kullanıcı #' + id + ' yasaklandı.');
+            }
+        }
+
+        function unbanUser(id) {
+            if (confirm('Bu kullanıcının yasağını kaldırmak istediğinizden emin misiniz?')) {
+                alert('Kullanıcı #' + id + ' yasağı kaldırıldı.');
+            }
+        }
+
+        // Feedback Actions
+        function markResolved(id) {
+            alert('Geri bildirim #' + id + ' çözüldü olarak işaretlendi.');
+        }
+
+        function respondFeedback(id) {
+            const response = prompt('Yanıtınızı yazın:');
+            if (response) {
+                alert('Yanıtınız gönderildi: ' + response);
+            }
+        }
+
+        function deleteFeedback(id) {
+            if (confirm('Bu geri bildirimi silmek istediğinizden emin misiniz?')) {
+                alert('Geri bildirim #' + id + ' silindi.');
+            }
+        }
+
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

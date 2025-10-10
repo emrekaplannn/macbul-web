@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Giriş Yap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* Left Side - Branding */
+        .login-left {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left::before {
+            content: '⚽';
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.1;
+            top: -2rem;
+            right: -4rem;
+            transform: rotate(-15deg);
+        }
+
+        .brand-logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            z-index: 1;
+        }
+
+        .brand-tagline {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            z-index: 1;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .feature-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Right Side - Login Form */
+        .login-right {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        /* Tabs */
+        .login-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #17a2b8;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #17a2b8;
+        }
+
+        /* Form */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #17a2b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #138496;
+        }
+
+        .submit-btn {
+            padding: 1rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            border-color: #17a2b8;
+            background: #f8f9fa;
+        }
+
+        .social-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Sign Up Link */
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .signup-link a {
+            color: #17a2b8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .login-left {
+                display: none;
+            }
+
+            .login-right {
+                padding: 2rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-right {
+                padding: 1.5rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading State */
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Left Side - Branding -->
+        <div class="login-left">
+            <div class="brand-logo">MaçBul</div>
+            <p class="brand-tagline">Halı saha maçını bul, hemen katıl</p>
+            
+            <div class="brand-features">
+                <div class="feature-item">
+                    <div class="feature-icon">📍</div>
+                    <div class="feature-text">
+                        <h3>Yakınındaki Maçlar</h3>
+                        <p>En yakın açık maçları keşfet</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">
+                        <h3>Anında Katılım</h3>
+                        <p>Tek tıkla maça kaydol</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚖️</div>
+                    <div class="feature-text">
+                        <h3>Dengeli Takımlar</h3>
+                        <p>Otomatik takım eşleştirme</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-right">
+            <div class="login-header">
+                <h2>Hoş Geldin! 👋</h2>
+                <p>Hesabına giriş yap ve maçları keşfet</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="login">Giriş Yap</button>
+                <button class="tab-btn" data-tab="signup">Kayıt Ol</button>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                ❌ E-posta veya şifre hatalı!
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                ✅ Giriş başarılı! Yönlendiriliyorsunuz...
+            </div>
+
+            <!-- Login Form -->
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">E-posta veya Telefon</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        placeholder="ornek@email.com veya 05XX XXX XX XX"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Şifre</label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="password" 
+                            class="form-input" 
+                            id="passwordInput"
+                            placeholder="Şifrenizi girin"
+                            required
+                        >
+                        <span class="input-icon" id="togglePassword">👁️</span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="rememberMe">
+                        <label for="rememberMe">Beni Hatırla</label>
+                    </div>
+                    <a href="#" class="forgot-password">Şifremi Unuttum</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Giriş Yap</button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>veya</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button class="social-btn">
+                    <span>🔵</span>
+                    <span>Google</span>
+                </button>
+                <button class="social-btn">
+                    <span>📱</span>
+                    <span>Apple</span>
+                </button>
+            </div>
+
+            <!-- Sign Up Link -->
+            <p class="signup-link">
+                Hesabın yok mu? <a href="#">Hemen Kayıt Ol</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (tab === 'signup') {
+                    alert('Kayıt Ol sayfası yakında eklenecek!');
+                    // In real implementation, show signup form
+                }
+            });
+        });
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Hide messages
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+            
+            // Show loading
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Simulate success (in real app, check credentials)
+                const isSuccess = true;
+                
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                
+                if (isSuccess) {
+                    successMessage.classList.add('show');
+                    setTimeout(() => {
+                        alert('Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...');
+                        // window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    errorMessage.classList.add('show');
+                }
+            }, 1500);
+        });
+
+        // Forgot password
+        document.querySelector('.forgot-password').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Şifre sıfırlama sayfası yakında eklenecek!\n\nE-posta adresinize sıfırlama linki gönderilecek.');
+        });
+
+        // Social login
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const provider = this.textContent.trim();
+                alert(provider + ' ile giriş özelliği yakında eklenecek!');
+            });
+        });
+
+        // Signup link
+        document.querySelector('.signup-link a').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Kayıt sayfası yakında eklenecek!');
+        });
+    </script>
+</body>
+</html>

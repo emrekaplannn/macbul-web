@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Cüzdan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .back-btn {
+            color: #17a2b8;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '💳';
+            position: absolute;
+            font-size: 12rem;
+            opacity: 0.1;
+            top: -2rem;
+            right: -2rem;
+            transform: rotate(-15deg);
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-info h3 {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .balance-amount {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .trend-positive {
+            color: #d4edda;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-btn {
+            padding: 1rem 2rem;
+            border: 2px solid white;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .balance-btn:hover {
+            background: white;
+            color: #17a2b8;
+            transform: translateY(-2px);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Filters */
+        .transaction-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn.active {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .filter-btn:hover:not(.active) {
+            border-color: #17a2b8;
+        }
+
+        /* Transaction List */
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .transaction-item:hover {
+            background: #e8f8f9;
+            transform: translateX(5px);
+        }
+
+        .transaction-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .transaction-icon.income {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .transaction-icon.expense {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .transaction-icon.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+            font-size: 1.05rem;
+        }
+
+        .transaction-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .transaction-right {
+            text-align: right;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .transaction-amount.positive {
+            color: #28a745;
+        }
+
+        .transaction-amount.negative {
+            color: #dc3545;
+        }
+
+        .transaction-status {
+            font-size: 0.85rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .action-btn:hover {
+            border-color: #17a2b8;
+            background: #f8f9fa;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            background: #e8f8f9;
+            color: #17a2b8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            background: #e8f8f9;
+        }
+
+        .payment-icon {
+            width: 50px;
+            height: 35px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .payment-info h4 {
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .payment-info p {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #e9ecef;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .amount-presets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .preset-btn {
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            border-color: #17a2b8;
+        }
+
+        .preset-btn.active {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .submit-btn {
+            padding: 1rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .balance-card {
+                padding: 2rem;
+            }
+
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+
+            .balance-header {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .balance-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .balance-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-filters {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .amount-presets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="nav-left">
+                <a href="#" class="back-btn">←</a>
+                <a href="#" class="logo">MaçBul</a>
+            </div>
+            <div class="user-avatar">AY</div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Cüzdanım</h1>
+            <p>Bakiyeni yönet, işlem geçmişini görüntüle</p>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-header">
+                <div class="balance-info">
+                    <h3>Toplam Bakiye</h3>
+                    <div class="balance-amount">₺120,50</div>
+                    <div class="balance-trend trend-positive">
+                        <span>↗️</span>
+                        <span>+₺200 Bu Ay</span>
+                    </div>
+                </div>
+                <div class="balance-actions">
+                    <button class="balance-btn" onclick="openModal('deposit')">
+                        <span>💰</span>
+                        <span>Bakiye Yükle</span>
+                    </button>
+                    <button class="balance-btn" onclick="openModal('withdraw')">
+                        <span>📤</span>
+                        <span>Para Çek</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #d4edda; color: #155724;">💸</div>
+                </div>
+                <div class="stat-value">₺1.450</div>
+                <div class="stat-label">Toplam Yükleme</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #f8d7da; color: #721c24;">🎫</div>
+                </div>
+                <div class="stat-value">₺1.329,50</div>
+                <div class="stat-label">Toplam Harcama</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #fff3cd; color: #856404;">⚽</div>
+                </div>
+                <div class="stat-value">18</div>
+                <div class="stat-label">Ödenen Maç</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: #e8f8f9; color: #17a2b8;">🔄</div>
+                </div>
+                <div class="stat-value">₺0</div>
+                <div class="stat-label">İade Tutarı</div>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Transaction History -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📊 İşlem Geçmişi</h2>
+                </div>
+
+                <!-- Filters -->
+                <div class="transaction-filters">
+                    <button class="filter-btn active">Tümü</button>
+                    <button class="filter-btn">Yüklemeler</button>
+                    <button class="filter-btn">Harcamalar</button>
+                    <button class="filter-btn">İadeler</button>
+                    <button class="filter-btn">Bekleyen</button>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Çamlık Halı Saha</div>
+                            <div class="transaction-meta">
+                                <span>21 Mart 2024</span>
+                                <span>•</span>
+                                <span>20:00</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount negative">-₺75</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon income">💰</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Bakiye Yükleme</div>
+                            <div class="transaction-meta">
+                                <span>20 Mart 2024</span>
+                                <span>•</span>
+                                <span>14:30</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount positive">+₺200</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Moda Halı Saha</div>
+                            <div class="transaction-meta">
+                                <span>18 Mart 2024</span>
+                                <span>•</span>
+                                <span>19:00</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount negative">-₺65</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Fenerbahçe Spor Tesisi</div>
+                            <div class="transaction-meta">
+                                <span>15 Mart 2024</span>
+                                <span>•</span>
+                                <span>21:00</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount negative">-₺80</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon income">🔄</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Maç İptali - İade</div>
+                            <div class="transaction-meta">
+                                <span>14 Mart 2024</span>
+                                <span>•</span>
+                                <span>10:15</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount positive">+₺70</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Bostancı Halı Saha</div>
+                            <div class="transaction-meta">
+                                <span>12 Mart 2024</span>
+                                <span>•</span>
+                                <span>18:30</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount negative">-₺70</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon income">💰</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Bakiye Yükleme</div>
+                            <div class="transaction-meta">
+                                <span>10 Mart 2024</span>
+                                <span>•</span>
+                                <span>16:20</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount positive">+₺150</div>
+                            <span class="transaction-status status-completed">Tamamlandı</span>
+                        </div>
+                    </div>
+
+                    <div class="transaction-item">
+                        <div class="transaction-icon pending">⏳</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Bakiye Çekme</div>
+                            <div class="transaction-meta">
+                                <span>08 Mart 2024</span>
+                                <span>•</span>
+                                <span>11:45</span>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <div class="transaction-amount negative">-₺100</div>
+                            <span class="transaction-status status-pending">İşlemde</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3 class="card-title">⚡ Hızlı İşlemler</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="openModal('deposit')">
+                            <div class="action-icon">💰</div>
+                            <span>Bakiye Yükle</span>
+                        </button>
+                        <button class="action-btn" onclick="openModal('withdraw')">
+                            <div class="action-icon">📤</div>
+                            <span>Para Çek</span>
+                        </button>
+                        <button class="action-btn" onclick="alert('İşlem geçmişi raporu indiriliyor...')">
+                            <div class="action-icon">📥</div>
+                            <span>Rapor İndir</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="card">
+                    <h3 class="card-title">💳 Ödeme Yöntemleri</h3>
+                    <div class="payment-methods">
+                        <div class="payment-method">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-info">
+                                <h4>Kredi/Banka Kartı</h4>
+                                <p>Anında yükleme</p>
+                            </div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-icon">🏦</div>
+                            <div class="payment-info">
+                                <h4>Banka Transferi</h4>
+                                <p>1-2 iş günü</p>
+                            </div>
+                        </div>
+                        <div class="payment-method">
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-info">
+                                <h4>Mobil Ödeme</h4>
+                                <p>Anında yükleme</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help -->
+                <div class="card" style="background: #f8f9fa;">
+                    <h4 style="margin-bottom: 1rem; color: #2c3e50;">💡 Bilgi</h4>
+                    <p style="font-size: 0.9rem; color: #6c757d; line-height: 1.6;">
+                        Minimum yükleme tutarı ₺10'dur. Para çekme işlemleri 1-3 iş günü içinde hesabınıza aktarılır.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div class="modal" id="depositModal">
+        <div class="modal-content">
+            <div class="modal

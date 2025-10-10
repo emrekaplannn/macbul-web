@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Profilim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #17a2b8;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.3);
+        }
+
+        .profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            background: white;
+            color: #17a2b8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-stats-quick {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quick-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .quick-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .edit-profile-btn {
+            background: white;
+            color: #17a2b8;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Tabs */
+        .tabs {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6c757d;
+        }
+
+        .tab-btn.active {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-action {
+            color: #17a2b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .card-action:hover {
+            color: #138496;
+        }
+
+        /* Overall Score */
+        .overall-score {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .overall-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            background: conic-gradient(#17a2b8 0% 82%, #e0e0e0 82% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .overall-circle-inner {
+            width: 170px;
+            height: 170px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overall-value {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #17a2b8;
+            line-height: 1;
+        }
+
+        .overall-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .overall-description {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .overall-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #d4edda;
+            color: #155724;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #17a2b8;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        /* Wallet */
+        .wallet-balance {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .balance-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .wallet-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .wallet-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .wallet-btn:hover {
+            background: white;
+            color: #17a2b8;
+        }
+
+        /* Transaction List */
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: #e8f8f9;
+        }
+
+        .transaction-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .transaction-icon.income {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .transaction-icon.expense {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.2rem;
+        }
+
+        .transaction-date {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .transaction-amount.positive {
+            color: #28a745;
+        }
+
+        .transaction-amount.negative {
+            color: #dc3545;
+        }
+
+        /* Match History */
+        .match-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .match-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .match-item:hover {
+            background: #e8f8f9;
+            transform: translateX(5px);
+        }
+
+        .match-date-box {
+            background: #17a2b8;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .match-day {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .match-month {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .match-details {
+            flex: 1;
+        }
+
+        .match-venue {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .match-info-row {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-result {
+            background: #d4edda;
+            color: #155724;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .match-rating {
+            text-align: center;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .rating-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Performance Chart */
+        .chart-container {
+            height: 250px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 0.5rem;
+            padding: 1rem 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: #17a2b8;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            background: #138496;
+            transform: translateY(-5px);
+        }
+
+        .chart-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+        }
+
+        .chart-value {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #17a2b8;
+        }
+
+        /* Full Width Card */
+        .card-full {
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-full {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .profile-header {
+                padding: 2rem;
+            }
+
+            .profile-name {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats-quick {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">MaçBul</a>
+            <div class="nav-links">
+                <a href="#">Maçlar</a>
+                <a href="#" class="active">Profilim</a>
+                <a href="#">Ayarlar</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-header-content">
+                <div class="profile-avatar-large">AY</div>
+                <div class="profile-info">
+                    <h1 class="profile-name">Ahmet Yılmaz</h1>
+                    <div class="profile-badges">
+                        <span class="badge">⭐ Güvenilir Oyuncu</span>
+                        <span class="badge">🏆 50+ Maç</span>
+                        <span class="badge">⚽ Forvet</span>
+                    </div>
+                    <div class="profile-stats-quick">
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">52</span>
+                            <span class="quick-stat-label">Toplam Maç</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">23</span>
+                            <span class="quick-stat-label">Gol</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">15</span>
+                            <span class="quick-stat-label">Asist</span>
+                        </div>
+                        <div class="quick-stat">
+                            <span class="quick-stat-value">4.7</span>
+                            <span class="quick-stat-label">Ortalama Puan</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="edit-profile-btn">Profili Düzenle</button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active">📊 Genel Bakış</button>
+            <button class="tab-btn">💳 Cüzdan</button>
+            <button class="tab-btn">⚽ Maç Geçmişi</button>
+            <button class="tab-btn">📈 İstatistikler</button>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Overall Score Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🎯 Overall Puanı</h2>
+                </div>
+                <div class="overall-score">
+                    <div class="overall-circle">
+                        <div class="overall-circle-inner">
+                            <div class="overall-value">82</div>
+                            <div class="overall-label">Overall</div>
+                        </div>
+                    </div>
+                    <p class="overall-description">Performansın harika! Oyun seviyeni korumaya devam et.</p>
+                    <div class="overall-trend">
+                        <span>↗️</span>
+                        <span>+5 Son 10 Maç</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📊 İstatistikler</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value">52</div>
+                        <div class="stat-label">Toplam Maç</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">23</div>
+                        <div class="stat-label">Gol</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Asist</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">87%</div>
+                        <div class="stat-label">Katılım Oranı</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">4.7</div>
+                        <div class="stat-label">Ortalama Puan</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">MotM</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wallet Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">💳 Cüzdan</h2>
+                    <a href="#" class="card-action">Tümünü Gör →</a>
+                </div>
+                <div class="wallet-balance">
+                    <div class="balance-label">Mevcut Bakiye</div>
+                    <div class="balance-amount">₺120,50</div>
+                    <div class="wallet-actions">
+                        <button class="wallet-btn">💰 Bakiye Yükle</button>
+                        <button class="wallet-btn">📤 Para Çek</button>
+                    </div>
+                </div>
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Çamlık Halı Saha</div>
+                            <div class="transaction-date">21 Mart 2024, 20:00</div>
+                        </div>
+                        <div class="transaction-amount negative">-₺75</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon income">📥</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Bakiye Yükleme</div>
+                            <div class="transaction-date">20 Mart 2024, 14:30</div>
+                        </div>
+                        <div class="transaction-amount positive">+₺200</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon expense">📤</div>
+                        <div class="transaction-info">
+                            <div class="transaction-title">Moda Halı Saha</div>
+                            <div class="transaction-date">18 Mart 2024, 19:00</div>
+                        </div>
+                        <div class="transaction-amount negative">-₺65</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Matches -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">⚽ Son Maçlar</h2>
+                    <a href="#" class="card-action">Tümünü Gör →</a>
+                </div>
+                <div class="match-list">
+                    <div class="match-item">
+                        <div class="match-date-box">
+                            <div class="match-day">21</div>
+                            <div class="match-month">MAR</div>
+                        </div>
+                        <div class="match-details">
+                            <div class="match-venue">Çamlık Halı Saha</div>
+                            <div class="match-info-row">
+                                <span>📍 Kadıköy</span>
+                                <span>⏰ 20:00</span>
+                                <span>⚽ 2 Gol, 1 Asist</span>
+                            </div>
+                            <span class="match-result">Kazanıldı 5-3</span>
+                        </div>
+                        <div class="match-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <div class="rating-label">9.2</div>
+                        </div>
+                    </div>
+
+                    <div class="match-item">
+                        <div class="match-date-box" style="background: #6c757d;">
+                            <div class="match-day">18</div>
+                            <div class="match-month">MAR</div>
+                        </div>
+                        <div class="match-details">
+                            <div class="match-venue">Moda Halı Saha</div>
+                            <div class="match-info-row">
+                                <span>📍 Kadıköy</span>
+                                <span>⏰ 19:00</span>
+                                <span>⚽ 1 Gol</span>
+                            </div>
+                            <span class="match-result" style="background: #f8d7da; color: #721c24;">Kaybedildi 3-4</span>
+                        </div>
+                        <div class="match-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐</div>
+                            <div class="rating-label">7.8</div>
+                        </div>
+                    </div>
+
+                    <div class="match-item">
+                        <div class="match-date-box">
+                            <div class="match-day">15</div>
+                            <div class="match-month">MAR</div>
+                        </div>
+                        <div class="match-details">
+                            <div class="match-venue">Fenerbahçe Spor Tesisi</div>
+                            <div class="match-info-row">
+                                <span>📍 Kadıköy</span>
+                                <span>⏰ 21:00</span>
+                                <span>⚽ 3 Gol, 2 Asist</span>
+                            </div>
+                            <span class="match-result">Kazanıldı 7-2</span>
+                        </div>
+                        <div class="match-rating">
+                            <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <div class="rating-label">9.5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <h2 class="card-title">📈 Overall Gelişimi</h2>
+                    <select style="padding: 0.5rem; border-radius: 6px; border: 2px solid #e0e0e0;">
+                        <option>Son 10 Maç</option>
+                        <option>Son 20 Maç</option>
+                        <option>Tüm Zamanlar</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 70%;">
+                            <span class="chart-value">75</span>
+                        </div>
+                        <div class="chart-label">Maç 1</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 75%;">
+                            <span class="chart-value">77</span>
+                        </div>
+                        <div class="chart-label">Maç 2</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 72%;">
+                            <span class="chart-value">76</span>
+                        </div>
+                        <div class="chart-label">Maç 3</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 78%;">
+                            <span class="chart-value">78</span>
+                        </div>
+                        <div class="chart-label">Maç 4</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 80%;">
+                            <span class="chart-value">80</span>
+                        </div>
+                        <div class="chart-label">Maç 5</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 79%;">
+                            <span class="chart-value">79</span>
+                        </div>
+                        <div class="chart-label">Maç 6</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 81%;">
+                            <span class="chart-value">81</span>
+                        </div>
+                        <div class="chart-label">Maç 7</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 82%;">
+                            <span class="chart-value">82</span>
+                        </div>
+                        <div class="chart-label">Maç 8</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 83%;">
+                            <span class="chart-value">83</span>
+                        </div>
+                        <div class="chart-label">Maç 9</div>
+                    </div>
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                        <div class="chart-bar" style="height: 82%;">
+                            <span class="chart-value">82</span>
+                        </div>
+                        <div class="chart-label">Maç 10</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tab = this.textContent;
+                console.log('Switched to:', tab);
+                // In real implementation, load different content
+                alert('Tab: ' + tab + '\n\nBu sekme içeriği yakında eklenecek!');
+            });
+        });
+
+        // Edit profile
+        document.querySelector('.edit-profile-btn').addEventListener('click', function() {
+            alert('Profil düzenleme sayfası yakında eklenecek!');
+        });
+
+        // Wallet actions
+        document.querySelectorAll('.wallet-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.textContent.includes('Yükle') ? 'Bakiye Yükleme' : 'Para Çekme';
+                alert(action + ' işlemi yakında eklenecek!');
+            });
+        });
+
+        // Match items
+        document.querySelectorAll('.match-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Navigate to match detail');
+                alert('Maç detay sayfasına yönlendiriliyorsunuz...');
+            });
+        });
+
+        // Chart bars hover
+        document.querySelectorAll('.chart-bar').forEach(bar => {
+            bar.addEventListener('mouseenter', function() {
+                const value = this.querySelector('.chart-value').textContent;
+                this.style.opacity = '0.8';
+            });
+            
+            bar.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+
+        // Transaction items
+        document.querySelectorAll('.transaction-item').forEach(item => {
+            item.addEventListener('click', function() {
+                alert('İşlem detayı yakında eklenecek!');
+            });
+        });
+
+        // Card actions
+        document.querySelectorAll('.card-action').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const text = this.closest('.card').querySelector('.card-title').textContent;
+                alert('Tüm ' + text + ' görüntüleniyor...');
+            });
+        });
+    </script>
+</body>
+</html>

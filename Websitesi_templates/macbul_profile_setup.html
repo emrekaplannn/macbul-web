@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Profilini Tamamla</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .setup-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .setup-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .setup-header::before {
+            content: '⚽';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            top: -2rem;
+            right: -2rem;
+            transform: rotate(-15deg);
+        }
+
+        .setup-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .setup-header p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 1.5rem 2.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .progress-bar-wrapper {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #17a2b8 0%, #138496 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Content */
+        .setup-content {
+            padding: 2.5rem;
+        }
+
+        /* Profile Photo Upload */
+        .photo-upload-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .photo-upload-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .photo-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #e8f8f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #17a2b8;
+            border: 4px solid #17a2b8;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-upload-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 45px;
+            height: 45px;
+            background: #17a2b8;
+            color: white;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .photo-upload-btn:hover {
+            background: #138496;
+            transform: scale(1.1);
+        }
+
+        .photo-upload-input {
+            display: none;
+        }
+
+        .photo-upload-text {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .photo-upload-hint {
+            color: #17a2b8;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Form */
+        .setup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .optional-badge {
+            background: #f8f9fa;
+            color: #6c757d;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .form-input {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-input:disabled {
+            background: #f8f9fa;
+            cursor: not-allowed;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #6c757d;
+            transition: color 0.3s;
+        }
+
+        .input-icon:hover {
+            color: #17a2b8;
+        }
+
+        .form-select {
+            padding: 0.9rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Position Grid */
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .position-card {
+            padding: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .position-card:hover {
+            border-color: #17a2b8;
+            background: #f8f9fa;
+        }
+
+        .position-card.selected {
+            border-color: #17a2b8;
+            background: #e8f8f9;
+        }
+
+        .position-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .position-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .position-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Referral Code */
+        .referral-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .referral-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .referral-icon {
+            width: 50px;
+            height: 50px;
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .referral-info h4 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .referral-info p {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .referral-input-wrapper {
+            position: relative;
+        }
+
+        .referral-apply-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .referral-apply-btn:hover {
+            background: #138496;
+        }
+
+        .referral-applied {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 8px;
+            margin-top: 0.8rem;
+        }
+
+        .referral-applied.show {
+            display: flex;
+        }
+
+        /* Buttons */
+        .form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-primary {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #e8f8f9;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .setup-container {
+                max-width: 100%;
+            }
+
+            .setup-header {
+                padding: 2rem;
+            }
+
+            .setup-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .setup-content {
+                padding: 1.5rem;
+            }
+
+            .progress-container {
+                padding: 1rem 1.5rem;
+            }
+
+            .position-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-buttons {
+                flex-direction: column-reverse;
+            }
+
+            .photo-preview {
+                width: 120px;
+                height: 120px;
+            }
+
+            .photo-upload-wrapper {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <!-- Header -->
+        <div class="setup-header">
+            <h1>Profilini Tamamla 🎯</h1>
+            <p>Hadi, seni daha iyi tanıyalım!</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-bar-wrapper">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% Tamamlandı</div>
+        </div>
+
+        <!-- Content -->
+        <div class="setup-content">
+            <!-- Profile Photo -->
+            <div class="photo-upload-section">
+                <div class="photo-upload-wrapper">
+                    <div class="photo-preview" id="photoPreview">
+                        👤
+                    </div>
+                    <label for="photoInput" class="photo-upload-btn">
+                        📷
+                    </label>
+                    <input 
+                        type="file" 
+                        id="photoInput" 
+                        class="photo-upload-input"
+                        accept="image/*"
+                    >
+                </div>
+                <div class="photo-upload-text">Profil Fotoğrafı Ekle</div>
+                <div class="photo-upload-hint">Opsiyonel, daha sonra ekleyebilirsin</div>
+            </div>
+
+            <!-- Form -->
+            <form class="setup-form" id="setupForm">
+                <!-- Basic Info Section -->
+                <div class="form-section">
+                    <h3 class="section-title">📋 Temel Bilgiler</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">E-posta Adresi</label>
+                        <input 
+                            type="email" 
+                            class="form-input" 
+                            value="ahmet.yilmaz@email.com"
+                            disabled
+                        >
+                        <span class="form-hint">✓ E-posta adresin doğrulandı</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Telefon Numarası
+                            <span class="optional-badge">Opsiyonel</span>
+                        </label>
+                        <input 
+                            type="tel" 
+                            class="form-input" 
+                            placeholder="05XX XXX XX XX"
+                            value="0532 123 45 67"
+                        >
+                        <span class="form-hint">📱 Maç hatırlatmaları için kullanılacak</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Şifre</label>
+                        <div class="input-with-icon">
+                            <input 
+                                type="password" 
+                                class="form-input" 
+                                id="passwordInput"
+                                placeholder="Mevcut şifreni gir veya değiştir"
+                                value="********"
+                            >
+                            <span class="input-icon" id="togglePassword">👁️</span>
+                        </div>
+                        <span class="form-hint">🔒 En az 8 karakter, bir büyük harf ve bir rakam</span>
+                    </div>
+                </div>
+
+                <!-- Player Info Section -->
+                <div class="form-section">
+                    <h3 class="section-title">⚽ Oyuncu Bilgileri</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tercih Ettiğin Pozisyon</label>
+                        <div class="position-grid">
+                            <div class="position-card" data-position="goalkeeper">
+                                <div class="position-icon">🧤</div>
+                                <div class="position-name">Kaleci</div>
+                                <div class="position-desc">Kaleyi koruma</div>
+                            </div>
+                            <div class="position-card" data-position="defender">
+                                <div class="position-icon">🛡️</div>
+                                <div class="position-name">Defans</div>
+                                <div class="position-desc">Savunma oyuncusu</div>
+                            </div>
+                            <div class="position-card selected" data-position="midfielder">
+                                <div class="position-icon">⚙️</div>
+                                <div class="position-name">Orta Saha</div>
+                                <div class="position-desc">Oyun kurma</div>
+                            </div>
+                            <div class="position-card" data-position="forward">
+                                <div class="position-icon">⚡</div>
+                                <div class="position-name">Forvet</div>
+                                <div class="position-desc">Gol atma</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedPosition" value="midfielder">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Oyun Seviyesi</label>
+                        <select class="form-select" id="skillLevel">
+                            <option value="">Seviye Seç</option>
+                            <option value="beginner">Başlangıç - Yeni başladım</option>
+                            <option value="intermediate" selected>Orta - Düzenli oynuyorum</option>
+                            <option value="advanced">İleri - Deneyimliyim</option>
+                            <option value="professional">Profesyonel - Yüksek seviye</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Favori Takım
+                            <span class="optional-badge">Opsiyonel</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-input" 
+                            placeholder="Örn: Galatasaray, Barcelona..."
+                        >
+                    </div>
+                </div>
+
+                <!-- Referral Section -->
+                <div class="referral-section">
+                    <div class="referral-header">
+                        <div class="referral-icon">🎁</div>
+                        <div class="referral-info">
+                            <h4>Referans Kodu Var mı?</h4>
+                            <p>Kod kullanarak ₺50 bonus kazan!</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="referral-input-wrapper">
+                            <input 
+                                type="text" 
+                                class="form-input" 
+                                id="referralCode"
+                                placeholder="Referans kodunu gir"
+                                style="padding-right: 100px;"
+                            >
+                            <button type="button" class="referral-apply-btn" onclick="applyReferral()">
+                                Uygula
+                            </button>
+                        </div>
+                        <div class="referral-applied" id="referralApplied">
+                            <span>✅</span>
+                            <span>Referans kodu uygulandı! ₺50 bonus kazandın.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="info-box">
+                    <div class="info-box-title">
+                        <span>💡</span>
+                        <span>Bilgi</span>
+                    </div>
+                    <div class="info-box-text">
+                        Bu bilgileri daha sonra profil ayarlarından istediğin zaman değiştirebilirsin. Referans kodunu şimdi kullanmazsan daha sonra ekleyemezsin.
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="skipSetup()">
+                        Şimdi Atla
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Tamamla ve Başla 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Calculate and update progress
+        function updateProgress() {
+            let completedFields = 0;
+            let totalFields = 6; // email(done), phone, password, position, skill, referral
+
+            // Email is already verified
+            completedFields++;
+
+            // Check phone
+            const phone = document.querySelector('input[type="tel"]').value;
+            if (phone) completedFields++;
+
+            // Check password (already filled)
+            completedFields++;
+
+            // Check position (already selected)
+            completedFields++;
+
+            // Check skill level
+            const skillLevel = document.getElementById('skillLevel').value;
+            if (skillLevel) completedFields++;
+
+            // Check referral (optional, so we don't count it as mandatory)
+            
+            const progress = Math.round((completedFields / totalFields) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% Tamamlandı';
+        }
+
+        // Photo upload
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Toggle password
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Position selection
+        document.querySelectorAll('.position-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.position-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                const position = this.dataset.position;
+                document.getElementById('selectedPosition').value = position;
+                updateProgress();
+            });
+        });
+
+        // Apply referral code
+        function applyReferral() {
+            const code = document.getElementById('referralCode').value.trim();
+            if (!code) {
+                alert('Lütfen bir referans kodu girin.');
+                return;
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                document.getElementById('referralApplied').classList.add('show');
+                document.getElementById('referralCode').disabled = true;
+                alert('🎉 Tebrikler!\n\nReferans kodun başarıyla uygulandı.\n₺50 bonus cüzdanına eklendi!');
+                updateProgress();
+            }, 500);
+        }
+
+        // Skip setup
+        function skipSetup() {
+            if (confirm('Profil kurulumunu şimdi atlamak istediğine emin misin?\n\nDaha sonra profil ayarlarından tamamlayabilirsin.')) {
+                alert('Ana sayfaya yönlendiriliyorsun...');
+                // window.location.href = '/dashboard';
+            }
+        }
+
+        // Form submission
+        document.getElementById('setupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('.btn-primary');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                alert('✅ Profil Kurulumu Tamamlandı!\n\nTebrikler! Artık maçlara katılmaya hazırsın.\n\nAna sayfaya yönlendiriliyorsun...');
+                // window.location.href = '/dashboard';
+            }, 2000);
+        });
+
+        // Update progress on input changes
+        document.querySelectorAll('.form-input, .form-select').forEach(input => {
+            input.addEventListener('input', updateProgress);
+            input.addEventListener('change', updateProgress);
+        });
+
+        // Initial progress calculation
+        updateProgress();
+    </script>
+</body>
+</html>
