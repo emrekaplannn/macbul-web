@@ -233,3 +233,108 @@ body {
   .matches-grid { grid-template-columns:1fr; }
   .page-header h1 { font-size:1.55rem; }
 }
+
+/* === LOGIN PAGE === */
+.login-page {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1000px;
+  width: 100%;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.login-left {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: #fff;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-left::before {
+  content: '⚽';
+  position: absolute;
+  font-size: 20rem;
+  opacity: 0.1;
+  top: -2rem;
+  right: -4rem;
+  transform: rotate(-15deg);
+}
+
+.brand-logo {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+}
+
+.brand-tagline {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+.brand-features { display: flex; flex-direction: column; gap: 1.5rem; }
+.feature-item { display: flex; align-items: center; gap: 1rem; }
+.feature-icon {
+  width: 50px; height: 50px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+}
+
+.login-right { padding: 4rem; display: flex; flex-direction: column; justify-content: center; }
+.login-header h2 { font-size: 2rem; color: #2c3e50; margin-bottom: 0.5rem; }
+.login-header p { color: #6c757d; font-size: 1rem; margin-bottom: 2rem; }
+
+.alert {
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signup-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.signup-link a {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: none;
+}
+.signup-link a:hover { text-decoration: underline; }
+
+@media (max-width: 968px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+  .login-left { display: none; }
+  .login-right { padding: 2rem; }
+}
+
