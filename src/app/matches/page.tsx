@@ -5,12 +5,14 @@ import Link from "next/link";
 import MatchCard from "@/features/matches/MatchCard";
 import type { MatchItem } from "@/features/matches/types";
 import FiltersBar, { Filters } from "@/features/matches/FiltersBar";
+import type { WalletDto } from "@/features/wallet/types";
+import { toNumber } from "@/features/wallet/utils";
 
 const DEBUG = true;
 
 function fromTsForFilter(date: Filters["date"]) {
   const now = new Date();
-  if (date === "all") return now.getTime(); // Tümü için geçmişi de görmek istersen: return 0;
+  if (date === "all") return now.getTime();
   if (date === "today") { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); }
   if (date === "tomorrow") { const d = new Date(); d.setDate(d.getDate()+1); d.setHours(0,0,0,0); return d.getTime(); }
   if (date === "week") { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); }
@@ -23,6 +25,9 @@ export default function MatchesPage() {
   const [view, setView] = useState<"list" | "map">("list");
   const [serverError, setServerError] = useState<string | null>(null);
 
+  // 💰 gerçek cüzdan bakiyesi
+  const [balance, setBalance] = useState<number | null>(null);
+
   const [filters, setFilters] = useState<Filters>({
     q: "",
     date: "all",
@@ -30,6 +35,7 @@ export default function MatchesPage() {
     status: "all",
   });
 
+  // Maç listesini çek
   useEffect(() => {
     let alive = true;
     const payload = { fromTimestamp: fromTsForFilter(filters.date) };
@@ -92,6 +98,28 @@ export default function MatchesPage() {
     return () => { alive = false; };
   }, [filters.date]);
 
+  // Cüzdan bakiyesini çek
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/wallet", { cache: "no-store" });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.message || "Cüzdan alınamadı");
+
+        const dto = data.wallet as WalletDto | null;
+        if (dto && alive) {
+          setBalance(toNumber(dto.balance));
+        }
+      } catch (err) {
+        DEBUG && console.warn("[wallet] balance fetch failed:", err);
+        if (alive) setBalance(null);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  // Client-side filtreler
   const filtered = useMemo(() => {
     const now = new Date();
     const out = items.filter((m) => {
@@ -139,13 +167,20 @@ export default function MatchesPage() {
     console.log("Go match detail:", m.id, m);
   }
 
+  // TL format helper (gerekirse utils’e alabilirsin)
+  const formatTL = (v: number) =>
+    new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2 }).format(v);
+
   return (
     <div className="page-wrap">
       <header className="topbar">
         <div className="topbar-inner">
           <Link href="/" className="logo-link">MaçBul</Link>
           <div className="user-info">
-            <div className="balance">₺120,50</div>
+            {/* balance → gerçek bakiye; /wallet sayfasına link */}
+            <Link href="/wallet" className="balance" title="Cüzdanı aç">
+              {balance !== null ? formatTL(balance) : "₺--,--"}
+            </Link>
             <div className="avatar">AY</div>
           </div>
         </div>
