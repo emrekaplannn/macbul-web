@@ -7,6 +7,7 @@ import TxFilters, { type TxFilter } from "@/features/wallet/TxFilters";
 import TxList from "@/features/wallet/TxList";
 import { toNumber } from "@/features/wallet/utils";
 import type { WalletDto, TransactionDto, WalletVM, TxVM } from "@/features/wallet/types";
+import { authFetch } from "@/lib/authFetch";
 
 const DEBUG = true;
 
@@ -22,12 +23,10 @@ export default function WalletPage() {
     (async () => {
       setLoading(true); setErr(null);
       try {
-        const [wRes, tRes] = await Promise.all([
-          fetch("/api/wallet", { cache: "no-store" }),
-          fetch("/api/transactions", { cache: "no-store" }),
-        ]);
-
-        const wJson = await wRes.json().catch(() => ({}));
+      const [wRes, tRes] = await Promise.all([
+        authFetch("/api/wallet", { cache: "no-store" }),
+        authFetch("/api/transactions", { cache: "no-store" }),
+      ]);        const wJson = await wRes.json().catch(() => ({}));
         const tJson = await tRes.json().catch(() => ({}));
 
         if (!wRes.ok) throw new Error(wJson?.message || "Cüzdan alınamadı");

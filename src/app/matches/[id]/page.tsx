@@ -17,13 +17,11 @@ const dbg = (...args: any[]) => { if (DEBUG) console.debug("[MatchDetail]", ...a
 export default function MatchDetailPage() {
   if (DEBUG) performance.mark("md:render:start");
 
-  // ⬇️ params prop'u yerine useParams()
   const routeParams = useParams<{ id: string }>();
   const id = routeParams?.id ?? "";
 
   const { wallet, match, slots, players, priceNumber, loading, err, join } = useMatchDetail(id);
 
-  // join'ı loglayan sarmalayıcı
   const handleJoin = async () => {
     dbg("join:start", { id, priceNumber, wallet, slots });
     const t0 = DEBUG ? performance.now() : 0;
@@ -113,25 +111,14 @@ export default function MatchDetailPage() {
 
             <div className="content-2col" style={{ marginTop: "2rem" }}>
               <div className="stack" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                <VenueCard match={match} />
                 <PlayersCard players={players} slots={slots} match={match} />
+                <VenueCard match={match} />
                 <RulesCard />
               </div>
 
               <div className="sidebar">
                 <ActionSidebar match={match} slots={slots} price={priceSafe} onJoin={handleJoin} balance={wallet} />
-                <div className="card">
-                  <h2 className="card-title">👤 Organizatör</h2>
-                  <div className="organizer-card">
-                    <div className="organizer-avatar">OR</div>
-                    <div className="organizer-info">
-                      <h4>Organizatör</h4>
-                      <span className="organizer-badge">⭐ Güvenilir</span>
-                      <p style={{ fontSize: ".85rem", color: "#6c757d", marginTop: ".3rem" }}>Çok sayıda maç yönetti</p>
-                    </div>
-                  </div>
-                  <button className="contact-btn">💬 Mesaj Gönder</button>
-                </div>
+                {/* Organizatör kartı kaldırıldı */}
               </div>
             </div>
           </>

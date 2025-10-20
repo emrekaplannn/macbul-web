@@ -626,6 +626,28 @@ body {
   border-top: 1px solid #dee2e6;
 }
 
+/* === RULES CARD === */
+.rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.rules-list li {
+    padding-left: 1.5rem;
+    position: relative;
+    color: #6c757d;
+}
+
+.rules-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #17a2b8;
+    font-weight: bold;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
   .content-2col { grid-template-columns: 1fr; }

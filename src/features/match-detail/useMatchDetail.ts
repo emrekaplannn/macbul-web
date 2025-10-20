@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DetailPayload, MatchDto, MatchParticipantDto, MatchSlotsDto, WalletDto } from "./types";
+import { authFetch } from "@/lib/authFetch";
 
 const DEBUG = process.env.NEXT_PUBLIC_DEBUG === "true";
 const dbg = (...args: any[]) => { if (DEBUG) console.debug("[useMatchDetail]", ...args); };
@@ -16,16 +17,14 @@ export function useMatchDetail(id: string) {
   const prev = useRef<{ loading?: boolean; err?: string | null }>({});
 
   // ---- yardımcı: JSON fetch + süre ölçümü
-  async function fetchJSON<T>(input: RequestInfo | URL, init?: RequestInit): Promise<{ data: T; res: Response; took: number }> {
-    const t0 = DEBUG ? performance.now() : 0;
-    const res = await fetch(input, { cache: "no-store", ...init });
-    let data: any = {};
-    try { data = await res.json(); } catch { /* yut */ }
-    const took = DEBUG ? Math.round(performance.now() - t0) : 0;
-    return { data, res, took };
-  }
-
-  // ---- bakiye
+async function fetchJSON<T>(input: RequestInfo | URL, init?: RequestInit): Promise<{ data: T; res: Response; took: number }> {
+  const t0 = DEBUG ? performance.now() : 0;
+  const res = await authFetch(input, { cache: "no-store", ...init });
+  let data: any = {};
+  try { data = await res.json(); } catch { /* yut */ }
+  const took = DEBUG ? Math.round(performance.now() - t0) : 0;
+  return { data, res, took };
+}  // ---- bakiye
   useEffect(() => {
     let alive = true;
     (async () => {
