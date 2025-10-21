@@ -699,3 +699,75 @@ body {
   .verify-card{max-width:100%}
   .verify-code-input{width:44px;height:54px;font-size:1.4rem}
 }
+
+
+/* ======= Landing: Layout & Header ======= */
+.mb-header{background:#fff;position:sticky;top:0;z-index:1000;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.mb-nav{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem}
+.mb-logo{font-size:1.8rem;font-weight:800;color:#17a2b8;text-decoration:none}
+.mb-nav-links{display:flex;gap:2rem;list-style:none}
+.mb-nav-links a{text-decoration:none;color:#333;font-weight:500;transition:color .2s}
+.mb-nav-links a:hover{color:#17a2b8}
+.mb-cta{background:#17a2b8;color:#fff;padding:.7rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:700;transition:.2s}
+.mb-cta:hover{background:#138496;transform:translateY(-2px);box-shadow:0 4px 12px rgba(23,162,184,.3)}
+
+/* ======= Hero ======= */
+.mb-hero{background:linear-gradient(135deg,#17a2b8 0%,#138496 100%);color:#fff;padding:6rem 2rem;text-align:center}
+.mb-hero-content{max-width:800px;margin:0 auto}
+.mb-hero h1{font-size:3rem;margin-bottom:1rem;font-weight:700}
+.mb-hero p{font-size:1.25rem;margin-bottom:2rem;opacity:.95}
+.mb-hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.mb-btn-primary{background:#fff;color:#17a2b8;padding:1rem 2.2rem;border-radius:8px;text-decoration:none;font-weight:700;border:2px solid #fff;transition:.2s}
+.mb-btn-primary:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.mb-btn-secondary{background:transparent;color:#fff;padding:1rem 2.2rem;border-radius:8px;text-decoration:none;font-weight:700;border:2px solid #fff;transition:.2s}
+.mb-btn-secondary:hover{background:rgba(255,255,255,.1);transform:translateY(-3px)}
+
+/* ======= Features ======= */
+.mb-features{padding:5rem 2rem;background:#f8f9fa}
+.mb-features-wrap{max-width:1200px;margin:0 auto}
+.mb-sec-title{text-align:center;font-size:2.5rem;margin-bottom:1rem;color:#2c3e50 ;font-weight:700}
+.mb-sec-sub{text-align:center;font-size:1.1rem;color:#6c757d;margin-bottom:3rem}
+.mb-features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.mb-feature-card{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08);transition:.2s}
+.mb-feature-card:hover{transform:translateY(-8px);box-shadow:0 8px 25px rgba(0,0,0,.15)}
+.mb-feature-icon{font-size:2.2rem;margin-bottom:.6rem}
+.mb-feature-card h3{font-size:1.4rem;margin-bottom:.4rem;color:#2c3e50;font-weight:700}
+.mb-feature-card p{color:#6c757d}
+
+/* ======= How It Works ======= */
+.mb-how{padding:5rem 2rem;background:#fff}
+.mb-steps-wrap{max-width:1000px;margin:0 auto}
+.mb-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;margin-top:2.5rem}
+.mb-step{text-align:center}
+.mb-step-num{width:60px;height:60px;background:#17a2b8;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;margin:0 auto 1rem}
+.mb-step h3{font-size:1.2rem;margin-bottom:.4rem;color:#2c3e50;font-weight:700}
+.mb-step p{color:#6c757d}
+
+/* ======= Stats ======= */
+.mb-stats{background:linear-gradient(135deg,#17a2b8 0%,#138496 100%);color:#fff;padding:4rem 2rem}
+.mb-stats-grid{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:center}
+.mb-stat h3{font-size:3rem;margin-bottom:.4rem}
+.mb-stat p{font-size:1.05rem;opacity:.9}
+
+/* ======= CTA ======= */
+.mb-cta-sec{padding:5rem 2rem;background:#f8f9fa;text-align:center}
+.mb-cta-wrap{max-width:700px;margin:0 auto}
+.mb-cta-sec h2{font-size:2.3rem;margin-bottom:1rem;color:#2c3e50;font-weight:700}
+.mb-cta-sec p{font-size:1.1rem;color:#6c757d;margin-bottom:1.6rem}
+
+/* ======= Footer ======= */
+.mb-footer{background:#2c3e50;color:#fff;padding:3rem 2rem 1rem}
+.mb-footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;margin-bottom:2rem}
+.mb-foot-col h4{margin-bottom:.8rem;color:#17a2b8}
+.mb-foot-col ul{list-style:none;padding:0;margin:0}
+.mb-foot-col li{margin-bottom:.5rem}
+.mb-foot-col a{color:#bbb;text-decoration:none;transition:.2s}
+.mb-foot-col a:hover{color:#17a2b8}
+.mb-foot-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid #444;color:#bbb}
+
+/* ======= Responsive ======= */
+@media (max-width:768px){
+  .mb-hero h1{font-size:2rem}
+  .mb-hero p{font-size:1.05rem}
+  .mb-nav-links{display:none}
+}
