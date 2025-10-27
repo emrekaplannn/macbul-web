@@ -771,3 +771,230 @@ body {
   .mb-hero p{font-size:1.05rem}
   .mb-nav-links{display:none}
 }
+
+
+/* === GLOBAL PROFILE STYLES (global.css) === */
+
+/* Genel sayfa yapısı */
+.page-wrap-profile {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Spinner (yükleniyor animasyonu) */
+.spinner-profile {
+  width: 32px;
+  height: 32px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #17a2b8;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Boş / hata blokları */
+.empty-profile {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+/* Kart yapısı */
+.card-profile,
+.card--wallet-profile {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover,
+.card--wallet:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Başlık stilleri */
+.card-title,
+.card-title--fast {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+}
+
+/* Sekmeler */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.tab-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.tab-btn.active {
+  background: #17a2b8;
+  color: #fff;
+}
+.tab-btn:hover {
+  background: #eaf6f8;
+}
+
+/* Profil header alanı */
+.profile-header {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+  color: #fff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 24px rgba(23, 162, 184, 0.3);
+}
+.profile-avatar {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #17a2b8;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Stats & overall kartı */
+.stat-box {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  text-align: center;
+  padding: 1rem;
+}
+.stat-box-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #17a2b8;
+}
+.stat-box-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Overall chart dairesi */
+.overall-ring {
+  width: 12rem;
+  height: 12rem;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  position: relative;
+}
+.overall-inner {
+  width: 10rem;
+  height: 10rem;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.overall-score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #17a2b8;
+}
+
+/* Trend etiketi */
+.trend-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #d1fae5;
+  color: #15803d;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Bar chart (PerformanceCard) */
+.bar {
+  background: #17a2b8;
+  border-radius: 0.5rem 0.5rem 0 0;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+.bar:hover {
+  transform: translateY(-3px);
+}
+.bar-value {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #17a2b8;
+}
+
+/* Son maç kartları */
+.match-card {
+  display: flex;
+  gap: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+.match-card:hover {
+  background: #e8f8f9;
+}
+.match-date {
+  background: #17a2b8;
+  color: #fff;
+  text-align: center;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.5rem;
+  width: 4rem;
+}
+.match-date.lost {
+  background: #6c757d;
+}
+.match-result {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.match-result.win {
+  background: #d1fae5;
+  color: #15803d;
+}
+.match-result.lose {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.match-result.draw {
+  background: #fef3c7;
+  color: #92400e;
+}
