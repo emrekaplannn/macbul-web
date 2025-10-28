@@ -6,8 +6,9 @@ export type ProfileApiResponse = {
     email: string;
     emailVerified?: boolean;
     displayName?: string;
-    firstName?: string;
-    lastName?: string;
+    fullName?: string;
+    bio?: string;
+    location?: string;
     position?: string;
     overall?: number;
   };

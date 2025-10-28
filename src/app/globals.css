@@ -848,6 +848,7 @@ body {
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   white-space: nowrap;
+  color: #000;
 }
 .tab-btn.active {
   background: #17a2b8;
@@ -936,26 +937,6 @@ body {
   border-radius: 9999px;
 }
 
-/* Bar chart (PerformanceCard) */
-.bar {
-  background: #17a2b8;
-  border-radius: 0.5rem 0.5rem 0 0;
-  position: relative;
-  transition: transform 0.2s ease;
-}
-.bar:hover {
-  transform: translateY(-3px);
-}
-.bar-value {
-  position: absolute;
-  top: -1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #17a2b8;
-}
-
 /* Son maç kartları */
 .match-card {
   display: flex;
@@ -997,4 +978,176 @@ body {
 .match-result.draw {
   background: #fef3c7;
   color: #92400e;
+}
+
+
+/* === PROFILE HEADER STYLES === */
+
+.profile-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(23, 162, 184, 0.3);
+        }
+
+.profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+
+.profile-header h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.profile-header .profile-avatar {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  background: #fff;
+  color: #17a2b8;
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header .profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.profile-header .badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.profile-header .badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+.profile-header .stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.profile-header .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-header .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.profile-header .stat-label {
+  font-size: 0.875rem;
+  opacity: 1;
+  color: #dde;
+}
+
+.profile-header .edit-btn {
+  background: #fff;
+  color: #17a2b8;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-header .edit-btn:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================= */
+/* PerformanceCard - Sade sürüm  */
+/* ============================= */
+
+/* Ana kart */
+.performance-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  padding: clamp(16px, 2vw, 24px);
+}
+
+/* Başlık */
+.performance-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.performance-title {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* Boş durum */
+.performance-empty {
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+}
+
+/* Liste */
+.performance-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Tek maç satırı */
+.performance-item {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.performance-item:hover {
+  background: #e8f8f9;
+}
+
+.match-label {
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-right: 1rem;
+}
+
+.match-score {
+  font-weight: 700;
+  color: #17a2b8;
+  font-size: 1rem;
 }

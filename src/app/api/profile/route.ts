@@ -19,9 +19,9 @@ type MeDto = {
   email: string;
   emailVerified?: boolean;
   isBanned?: boolean;
-  firstName?: string;
-  lastName?: string;
-  displayName?: string;
+  fullName?: string;
+  bio?: string;
+  location?: string;
   position?: string;
   overall?: number;
 };
@@ -278,7 +278,9 @@ async function buildOkResponse(base: string, auth: string, incomingCookie: strin
     { matches: 0, goals: 0, assists: 0, ratingSum: 0, ratingCount: 0, motm: 0 }
   );
 
-  const avgRating = totals.ratingCount ? +(totals.ratingSum / totals.ratingCount).toFixed(1) : null;
+  const avgRating = typeof me.overall === "number"
+    ? me.overall : null; // elle hesaplama: totals.ratingCount ? +(totals.ratingSum / totals.ratingCount).toFixed(1) : null;
+
   const overall = typeof me.overall === "number"
     ? me.overall
     : (avgRating ? Math.min(99, Math.max(50, Math.round(avgRating * 1))) : 82); // rating (0-100) beklediğin için *1
