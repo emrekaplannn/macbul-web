@@ -152,17 +152,7 @@ export default function ProfilePage() {
           <details style={{ marginTop: 8, color: "#6c757d" }}>
             <summary>Detay</summary>
             <pre style={{ whiteSpace: "pre-wrap" }}>
-{`İstek: GET /api/profile
-Olası Nedenler:
-• Oturum süresi dolmuş (401) ve refresh başarısız.
-• API_BASE_URL/env yanlış.
-• API /v1/profile/me endpoint hatası.
-• JSON gövdesi beklenmedik formatta.
 
-Çözüm:
-• Tarayıcı çerezlerini kontrol et (access_token/refresh_token).
-• /api/profile ve /v1/auth/refresh loglarını incele.
-• Sunucu loglarındaki 401/403/5xx kayıtlarını kontrol et.`}
             </pre>
           </details>
         </div>
