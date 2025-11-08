@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaçBul – Geçmiş Maç Değerlendirme</title>
+  <style>
+    :root{
+      --teal:#17a2b8; --teal-d:#138496; --ink:#2c3e50; --muted:#6c757d; --bg:#f8f9fa; --card:#fff;
+      --ok:#28a745; --warn:#ffc107; --bad:#dc3545;
+      --radius:12px; --shadow:0 4px 12px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:#333}
+    header{position:sticky;top:0;z-index:50;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+    nav{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem}
+    .logo{color:var(--teal);text-decoration:none;font-weight:800;font-size:1.4rem}
+    .user{display:flex;gap:1rem;align-items:center}
+    .chip{background:#e8f8f9;color:var(--teal);padding:.45rem .9rem;border-radius:99px;font-weight:700}
+    .avatar{width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-weight:800}
+
+    .container{max-width:1200px;margin:auto;padding:1.25rem}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,var(--teal),var(--teal-d));border-radius:16px;color:#fff;padding:2rem;box-shadow:0 8px 24px rgba(23,162,184,.25);margin-bottom:1.25rem}
+    .hero-head{display:flex;gap:1.25rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .hero h1{margin:0;font-size:1.8rem}
+    .meta{display:flex;gap:1rem;flex-wrap:wrap;opacity:.95}
+    .meta span{display:inline-flex;gap:.4rem;align-items:center}
+    .pill{background:rgba(255,255,255,.18);padding:.4rem .7rem;border-radius:10px;font-weight:700}
+
+    /* GRID */
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem}
+    @media (max-width:968px){.grid{grid-template-columns:1fr}}
+
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem}
+    .card h2{margin:0 0 .75rem;color:var(--ink);font-size:1.3rem;display:flex;gap:.5rem;align-items:center}
+    .sub{color:var(--muted);font-size:.95rem;margin-bottom:1rem}
+
+    /* PLAYER RATE LIST */
+    .team-toggle{display:flex;gap:.5rem;background:#f3f6f7;border-radius:10px;padding:.25rem;width:max-content}
+    .team-btn{border:0;background:transparent;padding:.5rem .8rem;border-radius:8px;font-weight:700;cursor:pointer}
+    .team-btn.active{background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+
+    .player{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;padding:1rem;border-radius:10px;background:#f8f9fa;margin-bottom:.75rem}
+    .player:hover{background:#e8f8f9}
+    .p-ava{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--teal)}
+    .p-name{font-weight:700;color:var(--ink)}
+    .p-meta{font-size:.85rem;color:var(--muted)}
+    .overall{background:var(--teal);color:#fff;padding:.2rem .6rem;border-radius:999px;font-weight:700}
+
+    .stars{display:inline-flex;gap:.2rem;font-size:1.2rem;cursor:pointer}
+    .stars button{background:transparent;border:0;font-size:1.3rem;line-height:1}
+
+    .fb-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+    .fb-tag{border:2px solid #e0e0e0;padding:.35rem .7rem;border-radius:999px;font-size:.85rem;cursor:pointer;user-select:none}
+    .fb-tag.active{border-color:var(--teal);color:var(--teal)}
+
+    .p-note{margin-top:.5rem}
+    textarea{width:100%;min-height:70px;border:2px solid #e0e0e0;border-radius:10px;padding:.6rem;font-family:inherit;resize:vertical}
+    textarea:focus{outline:none;border-color:var(--teal)}
+    .count{font-size:.8rem;color:var(--muted);text-align:right;margin-top:.25rem}
+
+    /* MATCH FEEDBACK */
+    .q-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+    @media (max-width:700px){.q-grid{grid-template-columns:1fr}}
+    .q{background:#f8f9fa;border-radius:10px;padding:1rem}
+    .q label{display:block;font-weight:700;margin-bottom:.35rem;color:var(--ink)}
+    .range{width:100%}
+    .radio-row{display:flex;gap:.5rem;flex-wrap:wrap}
+    .radio{border:2px solid #e0e0e0;border-radius:999px;padding:.35rem .7rem;cursor:pointer}
+    .radio input{display:none}
+    .radio.active{border-color:var(--teal);color:var(--teal)}
+
+    /* SIDEBAR */
+    .sticky{position:sticky;top:90px}
+    .summary{display:flex;flex-direction:column;gap:.7rem;border-bottom:2px solid #f0f0f0;padding-bottom:1rem;margin-bottom:1rem}
+    .row{display:flex;justify-content:space-between;color:var(--ink)}
+    .muted{color:var(--muted)}
+    .progress{height:10px;border-radius:999px;background:#e9ecef;overflow:hidden}
+    .progress>span{display:block;height:100%;background:var(--teal)}
+    .btn{width:100%;padding:1rem;border-radius:10px;border:0;font-weight:800;color:#fff;background:var(--teal);cursor:pointer}
+    .btn:hover{background:var(--teal-d)}
+    .btn.subtle{background:#fff;color:var(--teal);border:2px solid var(--teal)}
+    .btn.sm{width:auto;padding:.55rem .9rem;font-weight:700;border-radius:8px}
+    .btn[disabled]{opacity:.6;cursor:not-allowed}
+
+    .note{font-size:.85rem;color:var(--muted);text-align:center;margin-top:.5rem}
+
+    /* TOAST */
+    .toast{position:fixed;inset:auto 16px 16px auto;background:#111;color:#fff;padding:.8rem 1rem;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);transition:.25s}
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    /* REPORT */
+    dialog{border:0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);width:min(560px,92vw)}
+    dialog::backdrop{background:rgba(0,0,0,.35)}
+    .dlg-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+    .x{border:0;background:transparent;font-size:1.2rem;cursor:pointer}
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a class="logo" href="#">MaçBul</a>
+      <div class="user">
+        <div class="chip">₺120,50</div>
+        <div class="avatar" title="Profil">EK</div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <h1>Çamlık Halı Saha – Maç Özeti</h1>
+          <div class="meta">
+            <span>📅 <strong>21 Mart 2024</strong></span>
+            <span>⏰ <strong>20:00–21:00</strong></span>
+            <span>📍 <strong>Kadıköy, İstanbul</strong></span>
+            <span class="pill">Skor: <strong>5–3</strong></span>
+          </div>
+        </div>
+        <div class="pill">Sizin Puanınız: <span id="myScore">—</span></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <section class="card">
+        <h2>👥 Oyuncuları Oyla & Yorumla</h2>
+        <p class="sub">Takım arkadaşlarını yıldızla değerlendir, güçlü yönlerini etiketle ve kısa bir yorum bırak.</p>
+
+        <div class="team-toggle" id="teamToggle">
+          <button class="team-btn active" data-team="all">Tüm Oyuncular</button>
+          <button class="team-btn" data-team="A">Takım A (7)</button>
+          <button class="team-btn" data-team="B">Takım B (7)</button>
+        </div>
+
+        <div id="players"></div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="card sticky">
+        <h2>🧾 Özet</h2>
+        <div class="summary">
+          <div class="row"><span class="muted">Toplam Oyuncu</span><strong id="sumPlayers">0</strong></div>
+          <div class="row"><span class="muted">Oylanan</span><strong id="sumRated">0</strong></div>
+          <div class="progress"><span id="prog" style="width:0%"></span></div>
+        </div>
+
+        <div class="summary">
+          <div class="row"><span class="muted">Genel Maç Puanı</span><strong id="overallMatch">—</strong></div>
+          <div class="row"><span class="muted">Hakem/Fair Play</span><strong id="overallFair">—</strong></div>
+        </div>
+
+        <button class="btn subtle" id="reportBtn">Sorun Bildir</button>
+        <p class="note">⚠️ Her oyuncu ve maç geri bildirimi <b>ayrı ayrı</b> gönderilir.</p>
+      </aside>
+    </div>
+
+    <!-- MATCH FEEDBACK -->
+    <section class="card" style="margin-top:1rem">
+      <h2>📋 Maçla İlgili Geri Bildirim</h2>
+      <p class="sub">Organizasyon, saha ve uygulama deneyimi hakkında genel değerlendirmeni bırak.</p>
+
+      <div class="q-grid">
+        <div class="q">
+          <label>Organizasyon Kalitesi</label>
+          <input class="range" type="range" min="1" max="5" step="1" value="3" id="qOrg"/>
+        </div>
+        <div class="q">
+          <label>Saha/Fasilite</label>
+          <input class="range" type="range" min="1" max="5" step="1" value="4" id="qFacility"/>
+        </div>
+        <div class="q">
+          <label>Adil Oyun (Fair Play)</label>
+          <div class="radio-row" id="fairRow">
+            <label class="radio"><input type="radio" name="fair" value="İyi"/>İyi</label>
+            <label class="radio"><input type="radio" name="fair" value="Orta"/>Orta</label>
+            <label class="radio"><input type="radio" name="fair" value="Kötü"/>Kötü</label>
+          </div>
+        </div>
+        <div class="q">
+          <label>Ödeme & Uygulama Deneyimi</label>
+          <div class="radio-row" id="appRow">
+            <label class="radio"><input type="radio" name="app" value="Sorunsuz"/>Sorunsuz</label>
+            <label class="radio"><input type="radio" name="app" value="Yavaş"/>Yavaş</label>
+            <label class="radio"><input type="radio" name="app" value="Hata Var"/>Hata Var</label>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem">
+        <label for="matchNote" style="display:block;font-weight:700;color:var(--ink);margin-bottom:.35rem">Genel Yorum (opsiyonel)</label>
+        <textarea id="matchNote" placeholder="Maç genel değerlendirmeni yaz... (örn. Takımlar dengeliydi, saha kaygan değildi vb.)"></textarea>
+        <div class="count" id="matchNoteCount">0/400</div>
+        <div class="fb-row" style="margin-top:.5rem">
+          <button class="btn" id="sendMatch" disabled>Maç Geri Bildirimini Gönder</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Geri bildirim kaydedildi ✅</div>
+
+  <dialog id="dlgReport">
+    <div class="dlg-head">
+      <h3 style="margin:0">🚩 Sorun Bildir</h3>
+      <button class="x" onclick="dlgReport.close()">✕</button>
+    </div>
+    <div class="sub">Örn: Organizasyon gelmedi, saha kapalıydı, uygulama hatası vb.</div>
+    <textarea id="reportText" placeholder="Sorunu kısaca anlat..."></textarea>
+    <div class="count" id="reportCount">0/300</div>
+    <div style="display:flex;gap:.6rem;justify-content:flex-end;margin-top:.75rem">
+      <button class="btn subtle" onclick="dlgReport.close()">Vazgeç</button>
+      <button class="btn" id="sendReport">Gönder</button>
+    </div>
+  </dialog>
+
+  <script>
+    // --- MOCK DATA (takım & oyuncular) ---
+    const playersData = [
+      { id:1, initials:'ME', name:'Mehmet Yılmaz', stats:'42 maç • 18 gol', overall:82, team:'A' },
+      { id:2, initials:'AK', name:'Ali Kaya', stats:'35 maç • 12 gol', overall:78, team:'A' },
+      { id:3, initials:'CD', name:'Can Demir', stats:'58 maç • 5 gol', overall:85, team:'A' },
+      { id:4, initials:'BS', name:'Burak Şahin', stats:'28 maç • 22 gol', overall:80, team:'A' },
+      { id:5, initials:'EA', name:'Emre Aksoy', stats:'31 maç • 8 gol', overall:76, team:'B' },
+      { id:6, initials:'ÖY', name:'Özgür Yıldız', stats:'45 maç • 15 gol', overall:83, team:'B' },
+      { id:7, initials:'SK', name:'Serkan Kurt', stats:'22 maç • 10 gol', overall:74, team:'B' },
+      { id:8, initials:'TA', name:'Tolga Avcı', stats:'38 maç • 7 gol', overall:79, team:'B' },
+    ];
+
+    const tags = ['Skor katkısı','Savunma','Koşu mesafesi','Asist/Gol pası','Takım oyunu','Kaleci performansı','Spor ahlakı'];
+
+    const state = {
+      teamFilter:'all',
+      ratings:{}, // {playerId:{stars:0,tags:Set, note:''}}
+      match:{ org:3, facility:4, fair:null, app:null, note:'' }
+    };
+
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+    // Render players
+    function renderPlayers(){
+      const wrap = $('#players');
+      wrap.innerHTML = '';
+      const list = playersData.filter(p => state.teamFilter==='all' || p.team===state.teamFilter);
+
+      list.forEach(p=>{
+        const row = document.createElement('div');
+        row.className='player';
+        row.innerHTML = `
+          <div class="p-ava" style="background:${avatarColor(p.initials)}">${p.initials}</div>
+          <div>
+            <div class="p-name">${p.name} <span class="overall">${p.overall}</span></div>
+            <div class="p-meta">${p.stats} • Takım ${p.team}</div>
+            <div class="stars" data-id="${p.id}">
+              ${[1,2,3,4,5].map(i=>`<button aria-label="${i} yıldız" data-star="${i}">☆</button>`).join('')}
+            </div>
+            <div class="fb-row" id="tags-${p.id}"></div>
+            <div class="p-note">
+              <textarea id="note-${p.id}" placeholder="Kısa yorum (opsiyonel)"></textarea>
+              <div class="count" id="cnt-${p.id}">0/140</div>
+            </div>
+            <div class="fb-row">
+              <button class="btn sm" data-send-id="${p.id}" disabled>Oyuncu Geri Bildirimini Gönder</button>
+            </div>
+          </div>
+          <div>
+            <strong id="val-${p.id}">0★</strong>
+          </div>`;
+        wrap.appendChild(row);
+
+        // tags
+        const tgWrap = row.querySelector('#tags-'+p.id);
+        tags.forEach(t=>{
+          const b = document.createElement('button');
+          b.type='button';
+          b.className='fb-tag';
+          b.textContent=t;
+          b.addEventListener('click',()=>toggleTag(p.id,t,b));
+          tgWrap.appendChild(b);
+        });
+
+        // note
+        const ta = row.querySelector('#note-'+p.id);
+        ta.addEventListener('input',()=>{
+          const v = ta.value.slice(0,140); if(v!==ta.value) ta.value=v;
+          $('#cnt-'+p.id).textContent = v.length+"/140";
+          ensureRating(p.id).note=v;
+          updateSidebar();
+          updatePlayerSendState(p.id);
+        });
+      });
+
+      // star listeners after render
+      $$('.stars').forEach(starWrap=>{
+        starWrap.addEventListener('click',e=>{
+          const btn = e.target.closest('button');
+          if(!btn) return;
+          const id = +starWrap.dataset.id;
+          const val = +btn.dataset.star;
+          setStars(id,val);
+          updatePlayerSendState(id);
+        });
+      });
+
+      // oyuncu gönder butonları
+      $$('[data-send-id]').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const id = +btn.getAttribute('data-send-id');
+          sendPlayerFeedback(id, btn);
+        });
+      });
+
+      updateSidebar();
+    }
+
+    function ensureRating(id){
+      if(!state.ratings[id]) state.ratings[id] = {stars:0,tags:new Set(),note:''};
+      return state.ratings[id];
+    }
+
+    function setStars(id,val){
+      const r = ensureRating(id); r.stars=val;
+      const wrap = document.querySelector(`.stars[data-id="${id}"]`);
+      wrap.querySelectorAll('button').forEach((b,i)=>{ b.textContent = i<val ? '★':'☆'; });
+      $('#val-'+id).textContent = val+"★";
+      calcMyScore();
+      updateSidebar();
+    }
+
+    function toggleTag(id,tag,btn){
+      const r = ensureRating(id);
+      if(r.tags.has(tag)){ r.tags.delete(tag); btn.classList.remove('active'); }
+      else{ r.tags.add(tag); btn.classList.add('active'); }
+      updatePlayerSendState(id);
+    }
+
+    function calcMyScore(){
+      const vals = Object.values(state.ratings).map(r=>r.stars).filter(v=>v>0);
+      const avg = vals.length? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):'—';
+      $('#myScore').textContent = avg;
+    }
+
+    function updateSidebar(){
+      const total = playersData.length; const rated = Object.values(state.ratings).filter(r=>r.stars>0).length;
+      $('#sumPlayers').textContent = total; $('#sumRated').textContent = rated;
+      const pct = Math.round((rated/total)*100); $('#prog').style.width = pct+"%";
+    }
+
+    // Team filter
+    $('#teamToggle').addEventListener('click',e=>{
+      const b = e.target.closest('.team-btn'); if(!b) return;
+      $$('#teamToggle .team-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active'); state.teamFilter = b.dataset.team; renderPlayers();
+    });
+
+    // Match feedback bindings
+    ['qOrg','qFacility'].forEach(id=>{
+      $('#'+id).addEventListener('input',e=>{ state.match[id==='qOrg'?'org':'facility']=+e.target.value; updateMatchSendState(); });
+    });
+    $$('#fairRow .radio, #appRow .radio').forEach(r=>{
+      r.addEventListener('click',()=>{
+        $$(r.parentElement===$('#fairRow')? '#fairRow .radio': '#appRow .radio').forEach(x=>x.classList.remove('active'));
+        r.classList.add('active');
+        const group = r.parentElement.id==='fairRow'? 'fair':'app';
+        state.match[group]= r.textContent.trim();
+        if(group==='fair') $('#overallFair').textContent = state.match.fair;
+        updateMatchSendState();
+      });
+    });
+
+    $('#matchNote').addEventListener('input',e=>{
+      const v = e.target.value.slice(0,400); if(v!==e.target.value) e.target.value=v;
+      $('#matchNoteCount').textContent = v.length+"/400"; state.match.note=v;
+      updateMatchSendState();
+    });
+
+    // Maç geri bildirimi gönderim
+    const btnSendMatch = document.querySelector('#sendMatch');
+    if(btnSendMatch){
+      btnSendMatch.addEventListener('click',()=>{
+        const payload = {
+          matchId:'mock-123', org:state.match.org, facility:state.match.facility,
+          fair:state.match.fair, app:state.match.app, note:state.match.note
+        };
+        console.log('MATCH_FEEDBACK', payload);
+        $('#overallMatch').textContent = computeOverall({players: Object.values(state.ratings), org:state.match.org, facility:state.match.facility});
+        showToast('Maç geri bildirimin gönderildi ✅');
+        updateMatchSendState(true);
+      });
+    }
+
+    function computeOverall(payload){
+      // Basit ağırlık: oyuncu ortalaması %60, org %20, facility %20
+      const playerAvg = payload.players && payload.players.length? (payload.players.reduce((a,b)=>a+b.stars,0)/payload.players.length) : 0;
+      const out = (playerAvg*0.6) + (payload.org*0.2) + (payload.facility*0.2);
+      return out ? out.toFixed(1) : '—';
+    }
+
+    function showToast(text){
+      const t = $('#toast'); t.textContent=text; t.classList.add('show');
+      setTimeout(()=>t.classList.remove('show'), 1800);
+    }
+
+    // Report dialog
+    const dlgReport = $('#dlgReport');
+    $('#reportBtn').addEventListener('click',()=>dlgReport.showModal());
+    $('#reportText').addEventListener('input',e=>{
+      const v = e.target.value.slice(0,300); if(v!==e.target.value) e.target.value=v;
+      $('#reportCount').textContent = v.length+"/300";
+    });
+    $('#sendReport').addEventListener('click',()=>{ dlgReport.close(); showToast('Rapor iletildi 🚩'); });
+
+    // helpers
+    function avatarColor(key){
+      const palette = ['#17a2b8','#6c757d','#28a745','#ffc107','#dc3545','#6610f2','#fd7e14'];
+      let h=0; for(let i=0;i<key.length;i++) h=(h+key.charCodeAt(i))%palette.length; return palette[h];
+    }
+
+    function anyPlayerFeedbackPresent(id){
+      const r = ensureRating(id);
+      return (r.stars>0) || (r.note && r.note.trim().length>0) || (r.tags && r.tags.size>0);
+    }
+    function updatePlayerSendState(id){
+      const btn = document.querySelector(`[data-send-id="${id}"]`);
+      if(!btn) return;
+      btn.disabled = !anyPlayerFeedbackPresent(id);
+    }
+    function updateMatchSendState(sent){
+      const has = state.match.fair || state.match.app || (state.match.note && state.match.note.trim().length>0) || (typeof state.match.org==='number') || (typeof state.match.facility==='number');
+      const btn = $('#sendMatch');
+      if(btn){ btn.disabled = !has; if(sent){ btn.disabled=true; } }
+    }
+    function sendPlayerFeedback(id, btn){
+      const r = ensureRating(id);
+      if(!anyPlayerFeedbackPresent(id)) return;
+      const payload = { matchId:'mock-123', playerId:id, stars:r.stars, tags:[...r.tags], note:r.note };
+      console.log('PLAYER_FEEDBACK', payload);
+      showToast('Oyuncu geri bildirimin gönderildi ✅');
+      if(btn) btn.disabled = true; // tekrar gönderimi engelle
+    }
+
+    // --- SELF TESTS --- (basit konsol testleri)
+    function runSelfTests(){
+      try{
+        console.assert(typeof renderPlayers === 'function', 'renderPlayers fonksiyonu yok');
+        console.assert(typeof setStars === 'function', 'setStars fonksiyonu yok');
+        console.assert($('#players') instanceof HTMLElement, '#players bulunamadı');
+        setStars(1,3); // yan etki yaratmaz; yoksa rating oluşturur
+        ensureRating(1).note = 'test';
+        toggleTag(1,'Savunma',{classList:{add(){},remove(){}}});
+        updatePlayerSendState(1);
+        console.log('%c[SelfTest] Temel fonksiyonlar çalışıyor','color:green');
+      }catch(err){
+        console.error('[SelfTest] Hata:', err);
+      }
+    }
+
+    // init
+    renderPlayers();
+    updateMatchSendState();
+    runSelfTests();
+  </script>
+</body>
+</html>

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - Maç Geçmişim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #17a2b8;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title-section h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title-section p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .export-btn {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 2px solid #17a2b8;
+            color: #17a2b8;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            background: #17a2b8;
+            color: white;
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.3rem;
+        }
+
+        .summary-label {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .summary-trend {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .summary-trend.negative {
+            color: #dc3545;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        .filter-select, .filter-input {
+            padding: 0.8rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #138496;
+        }
+
+        /* Match Timeline */
+        .timeline-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: #f8f9fa;
+            padding: 0.3rem;
+            border-radius: 8px;
+        }
+
+        .view-btn {
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #6c757d;
+        }
+
+        .view-btn.active {
+            background: white;
+            color: #17a2b8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #17a2b8 0%, #e0e0e0 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .timeline-item:hover {
+            background: #e8f8f9;
+            transform: translateX(10px);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.3rem;
+            top: 1.5rem;
+            width: 16px;
+            height: 16px;
+            background: #17a2b8;
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px #17a2b8;
+        }
+
+        .timeline-item.win::before {
+            background: #28a745;
+            box-shadow: 0 0 0 3px #28a745;
+        }
+
+        .timeline-item.loss::before {
+            background: #dc3545;
+            box-shadow: 0 0 0 3px #dc3545;
+        }
+
+        .timeline-item.draw::before {
+            background: #ffc107;
+            box-shadow: 0 0 0 3px #ffc107;
+        }
+
+        .match-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .match-info-left {
+            flex: 1;
+        }
+
+        .match-date-time {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .match-venue-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6c757d;
+        }
+
+        .match-result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .match-result-badge.win {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .match-result-badge.loss {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .match-result-badge.draw {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .match-details-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .stat-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+        }
+
+        /* Grid View */
+        .grid-view {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .match-card-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .match-card-header.win {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+        }
+
+        .match-card-header.loss {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .match-card-header.draw {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        }
+
+        .match-card-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-card-result {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .match-card-body {
+            padding: 1.5rem;
+        }
+
+        .match-card-venue {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-card-location {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .match-card-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #6c757d;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .page-btn {
+            padding: 0.6rem 1rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+
+        .page-btn.active {
+            background: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title-section h1 {
+                font-size: 2rem;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-row {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .timeline {
+                padding-left: 2rem;
+            }
+
+            .timeline::before {
+                left: 0.5rem;
+            }
+
+            .timeline-item::before {
+                left: -1.8rem;
+            }
+
+            .match-details-row {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-view {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">MaçBul</a>
+            <div class="nav-links">
+                <a href="#">Maçlar</a>
+                <a href="#" class="active">Geçmişim</a>
+                <a href="#">Profilim</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title-section">
+                <h1>⚽ Maç Geçmişim</h1>
+                <p>Oynadığın tüm maçları görüntüle ve performansını takip et</p>
+            </div>
+            <div class="page-actions">
+                <button class="export-btn">📊 Rapor Al</button>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <div class="summary-icon">⚽</div>
+                <div class="summary-value">52</div>
+                <div class="summary-label">Toplam Maç</div>
+                <div class="summary-trend">↗️ +5 Bu Ay</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">🏆</div>
+                <div class="summary-value">34</div>
+                <div class="summary-label">Kazanılan</div>
+                <div class="summary-trend">65% Başarı</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">⭐</div>
+                <div class="summary-value">23</div>
+                <div class="summary-label">Toplam Gol</div>
+                <div class="summary-trend">↗️ 0.44 Ort/Maç</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">🎯</div>
+                <div class="summary-value">15</div>
+                <div class="summary-label">Toplam Asist</div>
+                <div class="summary-trend">↗️ 0.29 Ort/Maç</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-icon">📈</div>
+                <div class="summary-value">4.7</div>
+                <div class="summary-label">Ortalama Puan</div>
+                <div class="summary-trend">↗️ +0.3 Bu Ay</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label class="filter-label">Tarih Aralığı</label>
+                    <select class="filter-select" id="dateFilter">
+                        <option>Tüm Zamanlar</option>
+                        <option>Son 7 Gün</option>
+                        <option>Son 30 Gün</option>
+                        <option>Son 3 Ay</option>
+                        <option>Son 6 Ay</option>
+                        <option>Bu Yıl</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sonuç</label>
+                    <select class="filter-select" id="resultFilter">
+                        <option>Tümü</option>
+                        <option>Kazanılan</option>
+                        <option>Kaybedilen</option>
+                        <option>Berabere</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Saha</label>
+                    <select class="filter-select" id="venueFilter">
+                        <option>Tüm Sahalar</option>
+                        <option>Çamlık Halı Saha</option>
+                        <option>Fenerbahçe Spor Tesisi</option>
+                        <option>Moda Halı Saha</option>
+                    </select>
+                </div>
+                <button class="filter-btn" onclick="applyFilters()">Filtrele</button>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="timeline-section">
+            <div class="timeline-header">
+                <h2 class="timeline-title">Maç Geçmişi</h2>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('timeline')">📋 Zaman Çizelgesi</button>
+                    <button class="view-btn" onclick="switchView('grid')">🎴 Kart Görünümü</button>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="timeline" id="timelineView">
+                <!-- Match 1 - Win -->
+                <div class="timeline-item win" onclick="showMatchDetail(1)">
+                    <div class="match-header-row">
+                        <div class="match-info-left">
+                            <div class="match-date-time">
+                                <span>📅 21 Mart 2024</span>
+                                <span>⏰ 20:00</span>
+                            </div>
+                            <h3 class="match-venue-name">Çamlık Halı Saha</h3>
+                            <div class="match-location">
+                                <span>📍</span>
+                                <span>Kadıköy, İstanbul</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="match-result-badge win">Kazanıldı 5-3</div>
+                            <div class="rating-display" style="margin-top: 0.8rem;">
+                                <span class="rating-stars">⭐</span>
+                                <span>9.2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-details-row">
+                        <div class="detail-item">
+                            <span class="detail-label">Pozisyon</span>
+                            <span class="detail-value">⚽ Forvet</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Süre</span>
+                            <span class="detail-value">⏱️ 60 dakika</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kişisel İstatistikler</span>
+                            <div class="player-stats">
+                                <span class="stat-chip">⚽ 2 Gol</span>
+                                <span class="stat-chip">🎯 1 Asist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match 2 - Loss -->
+                <div class="timeline-item loss" onclick="showMatchDetail(2)">
+                    <div class="match-header-row">
+                        <div class="match-info-left">
+                            <div class="match-date-time">
+                                <span>📅 18 Mart 2024</span>
+                                <span>⏰ 19:00</span>
+                            </div>
+                            <h3 class="match-venue-name">Moda Halı Saha</h3>
+                            <div class="match-location">
+                                <span>📍</span>
+                                <span>Kadıköy, İstanbul</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="match-result-badge loss">Kaybedildi 3-4</div>
+                            <div class="rating-display" style="margin-top: 0.8rem;">
+                                <span class="rating-stars">⭐</span>
+                                <span>7.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-details-row">
+                        <div class="detail-item">
+                            <span class="detail-label">Pozisyon</span>
+                            <span class="detail-value">⚽ Forvet</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Süre</span>
+                            <span class="detail-value">⏱️ 60 dakika</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kişisel İstatistikler</span>
+                            <div class="player-stats">
+                                <span class="stat-chip">⚽ 1 Gol</span>
+                                <span class="stat-chip">🎯 0 Asist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match 3 - Win -->
+                <div class="timeline-item win" onclick="showMatchDetail(3)">
+                    <div class="match-header-row">
+                        <div class="match-info-left">
+                            <div class="match-date-time">
+                                <span>📅 15 Mart 2024</span>
+                                <span>⏰ 21:00</span>
+                            </div>
+                            <h3 class="match-venue-name">Fenerbahçe Spor Tesisi</h3>
+                            <div class="match-location">
+                                <span>📍</span>
+                                <span>Kadıköy, İstanbul</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="match-result-badge win">Kazanıldı 7-2</div>
+                            <div class="rating-display" style="margin-top: 0.8rem;">
+                                <span class="rating-stars">⭐</span>
+                                <span>9.5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-details-row">
+                        <div class="detail-item">
+                            <span class="detail-label">Pozisyon</span>
+                            <span class="detail-value">⚽ Forvet</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Süre</span>
+                            <span class="detail-value">⏱️ 60 dakika</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kişisel İstatistikler</span>
+                            <div class="player-stats">
+                                <span class="stat-chip">⚽ 3 Gol</span>
+                                <span class="stat-chip">🎯 2 Asist</span>
+                                <span class="stat-chip">🏆 MotM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match 4 - Draw -->
+                <div class="timeline-item draw" onclick="showMatchDetail(4)">
+                    <div class="match-header-row">
+                        <div class="match-info-left">
+                            <div class="match-date-time">
+                                <span>📅 12 Mart 2024</span>
+                                <span>⏰ 18:30</span>
+                            </div>
+                            <h3 class="match-venue-name">Bostancı Halı Saha</h3>
+                            <div class="match-location">
+                                <span>📍</span>
+                                <span>Kadıköy, İstanbul</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="match-result-badge draw">Berabere 4-4</div>
+                            <div class="rating-display" style="margin-top: 0.8rem;">
+                                <span class="rating-stars">⭐</span>
+                                <span>8.3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="match-details-row">
+                        <div class="detail-item">
+                            <span class="detail-label">Pozisyon</span>
+                            <span class="detail-value">⚽ Forvet</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Süre

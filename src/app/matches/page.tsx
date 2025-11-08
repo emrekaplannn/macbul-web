@@ -1,14 +1,71 @@
+// app/(matches)/matches/page.tsx   — kendi yolunuza koyabilirsiniz
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import MatchCard from "@/features/matches/MatchCard";
 import type { MatchItem } from "@/features/matches/types";
 import FiltersBar, { Filters } from "@/features/matches/FiltersBar";
 import type { WalletDto } from "@/features/wallet/types";
 import { toNumber } from "@/features/wallet/utils";
+import { useRouter } from "next/navigation";
+import fallbackAvatar from "@/app/avatar/fallback.png";
+import { clientLogout } from "@/lib/auth/logout";
 
 const DEBUG = true;
+
+// ---- Güvenli URL seçici
+function pickSafeAvatar(raw: unknown): string {
+  const s = typeof raw === "string" ? raw.trim() : "";
+  if (!s) return fallbackAvatar.src;
+  try {
+    const u = new URL(s);
+    if (u.protocol === "http:" || u.protocol === "https:") return u.toString();
+  } catch {}
+  return fallbackAvatar.src;
+}
+
+// ---- Basit cookie yardımcıları (sadece JS ile erişilebilen cookie’ler için)
+function deleteCookie(name: string, path = "/") {
+  try {
+    // mümkün olan tüm kombinasyonlarla silmeye çalış
+    const domains = [window.location.hostname, window.location.hostname.replace(/^www\./, "")]
+      .filter(Boolean)
+      .filter((v, i, a) => a.indexOf(v) === i);
+    const opts = [
+      `path=${path}`,
+      `path=/;SameSite=Lax`,
+      `path=/;SameSite=None;Secure`,
+    ];
+    // domainli ve domainsiz dene
+    document.cookie = `${encodeURIComponent(name)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+    for (const d of domains) {
+      for (const o of opts) {
+        document.cookie = `${encodeURIComponent(name)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=.${d}; ${o}`;
+        document.cookie = `${encodeURIComponent(name)}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; domain=${d}; ${o}`;
+      }
+    }
+  } catch {}
+}
+
+function nukeAllClientStorage() {
+  try { localStorage.clear(); } catch {}
+  try { sessionStorage.clear(); } catch {}
+  // Cookie’ler: yalnızca HttpOnly OLMAYANLAR JS ile silinebilir
+  try {
+    const all = document.cookie?.split(";").map(c => c.trim().split("=")[0]) ?? [];
+    const names = [...new Set(all.filter(Boolean))];
+    names.forEach(n => deleteCookie(n));
+  } catch {}
+  // Cache Storage
+  if ("caches" in window) {
+    caches.keys().then(keys => keys.forEach(k => caches.delete(k))).catch(() => {});
+  }
+  // (Opsiyonel) Service Worker oturumu (unregister, kritikse açın)
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
+  // }
+}
 
 function fromTsForFilter(date: Filters["date"]) {
   const now = new Date();
@@ -20,12 +77,13 @@ function fromTsForFilter(date: Filters["date"]) {
 }
 
 export default function MatchesPage() {
+  const router = useRouter();
+
   const [items, setItems] = useState<MatchItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"list" | "map">("list");
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // 💰 gerçek cüzdan bakiyesi
   const [balance, setBalance] = useState<number | null>(null);
 
   const [filters, setFilters] = useState<Filters>({
@@ -34,6 +92,33 @@ export default function MatchesPage() {
     price: "all",
     status: "all",
   });
+
+  // === Avatar menüsü durumları ===
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const avatarBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  // Avatar URL
+  const [avatarUrl, setAvatarUrl] = useState<string>(fallbackAvatar.src);
+
+  // Menüyü kapat: dışarı tıkla veya Esc
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!menuOpen) return;
+      const t = e.target as Node;
+      if (menuRef.current?.contains(t) || avatarBtnRef.current?.contains(t)) return;
+      setMenuOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   // Maç listesini çek
   useEffect(() => {
@@ -98,7 +183,7 @@ export default function MatchesPage() {
     return () => { alive = false; };
   }, [filters.date]);
 
-  // Cüzdan bakiyesini çek
+  // Cüzdan bakiyesi
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -114,6 +199,27 @@ export default function MatchesPage() {
       } catch (err) {
         DEBUG && console.warn("[wallet] balance fetch failed:", err);
         if (alive) setBalance(null);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  // Avatarı çek
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/profile/avatar", { cache: "no-store" });
+        const data = await res.json().catch(() => ({}));
+        if (!alive) return;
+
+        const chosen = pickSafeAvatar((data as any)?.url);
+        setAvatarUrl(chosen);
+        if (DEBUG) console.debug("[avatar] response", { status: res.status, data, chosen });
+      } catch (e) {
+        if (!alive) return;
+        setAvatarUrl(fallbackAvatar.src);
+        if (DEBUG) console.debug("[avatar] fetch error → fallback", e);
       }
     })();
     return () => { alive = false; };
@@ -167,21 +273,85 @@ export default function MatchesPage() {
     console.log("Go match detail:", m.id, m);
   }
 
-  // TL format helper (gerekirse utils’e alabilirsin)
   const formatTL = (v: number) =>
     new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", minimumFractionDigits: 2 }).format(v);
+
+  // === Çıkış — TAMAMEN ÖN YÜZDE ===
+  async function handleLogout() {
+  await clientLogout("/login");
+}
 
   return (
     <div className="page-wrap">
       <header className="topbar">
         <div className="topbar-inner">
           <Link href="/" className="logo-link">MaçBul</Link>
-          <div className="user-info">
-            {/* balance → gerçek bakiye; /wallet sayfasına link */}
+          <div className="user-info" style={{ position: "relative" }}>
             <Link href="/wallet" className="balance" title="Cüzdanı aç">
               {balance !== null ? formatTL(balance) : "₺--,--"}
             </Link>
-            <div className="avatar">AY</div>
+
+            {/* Avatar butonu */}
+            <button
+              ref={avatarBtnRef}
+              type="button"
+              className="avatar"
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((s) => !s)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setMenuOpen((s) => !s);
+                }
+              }}
+              title="Profil menüsü"
+            >
+              <img
+                src={avatarUrl}
+                alt="Profil"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+                onError={(e) => {
+                  const img = e.currentTarget;
+                  if (img.src !== fallbackAvatar.src) {
+                    img.onerror = null;
+                    img.src = fallbackAvatar.src;
+                    if (DEBUG) console.debug("[avatar] img onError → fallback");
+                  }
+                }}
+              />
+            </button>
+
+            {/* Açılır menü */}
+            {menuOpen && (
+              <div
+                ref={menuRef}
+                role="menu"
+                aria-label="Kullanıcı menüsü"
+                className="avatar-menu"
+              >
+                <Link
+                  role="menuitem"
+                  href="/profile"
+                  className="menu-item"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Profil
+                </Link>
+                <button
+                  role="menuitem"
+                  className="menu-item danger"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    handleLogout();
+                  }}
+                >
+                  Çıkış yap
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -235,6 +405,7 @@ export default function MatchesPage() {
           </div>
         )}
       </div>
+
     </div>
   );
 }
