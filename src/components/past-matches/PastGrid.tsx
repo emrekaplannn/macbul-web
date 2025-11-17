@@ -14,7 +14,7 @@ export default function PastGrid({ items }: { items: PastMatchItem[] }) {
       {items.map((m) => {
         const d = new Date(m.time);
         return (
-          <a key={m.matchId} href={`/matches/${m.matchId}`} className="past-matches-card">
+          <a key={m.matchId} href={`/matches/${m.matchId}/feedback`} className="past-matches-card">
             <div className={`past-matches-card-head ${headerClass(m)}`}>
               <div className="past-matches-card-date">
                 {d.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })} • {d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}

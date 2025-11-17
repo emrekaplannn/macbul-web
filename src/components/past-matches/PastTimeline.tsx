@@ -15,7 +15,7 @@ export default function PastTimeline({ items }: { items: PastMatchItem[] }) {
         const d = new Date(m.time);
         const resLabel = m.winningTeam === "DRAW" ? "Berabere" : (m.winningTeam === m.team ? "Kazanıldı" : "Kaybedildi");
         return (
-          <a key={m.matchId} href={`/matches/${m.matchId}`} className={`past-matches-timeline-item ${resultClass(m)}`}>
+          <a key={m.matchId} href={`/matches/${m.matchId}/feedback`} className={`past-matches-timeline-item ${resultClass(m)}`}>
             <div className="past-matches-match-row">
               <div className="past-matches-match-left">
                 <div className="past-matches-datetime">

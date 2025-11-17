@@ -18,7 +18,7 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
     <div className="card-profile">
       <div className="flex items-center justify-between mb-4">
         <div className="card-title">⚽ Son Maçlar</div>
-        <a href="/matches" className="text-[#17a2b8] font-semibold text-sm">Tümünü Gör →</a>
+        <a href="/past-matches" className="text-[#17a2b8] font-semibold text-sm">Tümünü Gör →</a>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -29,7 +29,7 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
           const won = m.winningTeam === "DRAW" ? null : m.winningTeam === m.my.team;
 
           return (
-            <a key={m.matchId} href={`/matches/${m.matchId}`} className="match-card">
+            <a key={m.matchId} href={`/matches/${m.matchId}/feedback`} className="match-card">
               <div className={`match-date ${won === false ? "lost" : ""}`}>
                 <div className="text-2xl font-bold leading-none">{day}</div>
                 <div className="text-xs opacity-90">{mon}</div>

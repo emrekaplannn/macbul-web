@@ -14,6 +14,28 @@ type AuthResponse = {
   expiresInMs: number;
 };
 
+// ---- DTO'lar (typing için) ----
+type TeamLabel = "A" | "B";
+type AttendanceStatus = "JOINED" | "LEFT" | "NO_SHOW" | "SUBSTITUTE" | string;
+
+type MatchPlayerResultDto = {
+  matchPlayerResultId: number;
+  matchId: string;
+  userId: string;
+  teamLabel: TeamLabel;
+  attendanceStatus: AttendanceStatus;
+  position: string | null;
+  goals: number | null;
+  assists: number | null;
+  ownGoals: number | null;
+  saves: number | null;
+  rating: number | null; // 0-100
+  mvp: boolean | null;
+  notes: string | null;
+  createdAt: number | null;
+  updatedAt: number | null;
+};
+
 function setAuthCookies(out: NextResponse, auth: AuthResponse) {
   const isProd = process.env.NODE_ENV === "production";
   out.cookies.set("access_token", auth.accessToken, {
@@ -84,9 +106,10 @@ export async function GET(req: Request) {
 
     const newAuth = `Bearer ${j.accessToken}`;
     const retry = await fetchJSON<T>(url, fwd(newAuth));
-    const out = NextResponse.next(); // just to use cookie setter
-    setAuthCookies(out, j);
-    return { r: retry.r, data: retry.data, authUsed: newAuth };
+
+    // Not: Cookie'leri gerçekten set etmek için response'a eklemek gerekir.
+    // Burada sadece refresh başarılı oldu bilgisini dönüyoruz; aşağıda JSON dönerken cookie set edilebilir.
+    return { r: retry.r, data: retry.data, authUsed: newAuth, refreshed: j as AuthResponse };
   };
 
   try {
@@ -99,7 +122,7 @@ export async function GET(req: Request) {
     auth = meCall.authUsed; // possibly refreshed
     const me = meCall.data;
 
-    // 2) player results (we’ll filter/paginate here for now)
+    // 2) player results of the user
     const prUrl = `${base}/v1/match-player-results/user/${me.id}`;
     const pr = await fetchJSON<any[]>(prUrl, fwd(auth));
     if (!pr.r.ok) {
@@ -121,16 +144,19 @@ export async function GET(req: Request) {
       }
     })();
 
-    // hydrate each match with details
+    // 3) hydrate each match with details + **OYUNCULAR**
     const hydrated = await Promise.all(
       all.map(async (p) => {
         const mUrl = `${base}/v1/matches/${p.matchId}`;
         const tUrl = `${base}/v1/match-team-results/match/${p.matchId}`;
         const rUrl = `${base}/v1/match-results/match/${p.matchId}`;
-        const [m, t, r] = await Promise.all([
+        const plUrl = `${base}/v1/match-player-results/match/${p.matchId}`; // ✅ EKLENDİ
+
+        const [m, t, r, pl] = await Promise.all([
           fetchJSON<any>(mUrl, fwd(auth)),
           fetchJSON<any[]>(tUrl, fwd(auth)),
           fetchJSON<any>(rUrl, fwd(auth)),
+          fetchJSON<MatchPlayerResultDto[]>(plUrl, fwd(auth)), // ✅ EKLENDİ
         ]);
 
         const teams = Array.isArray(t.data) ? t.data : [];
@@ -141,9 +167,27 @@ export async function GET(req: Request) {
         const match = m.data || {};
         const time = match?.matchTimestamp ?? p.createdAt ?? 0;
 
+        // ✅ Oyuncu listesi: backend DTO’dan gerekli alanları topla
+        const players =
+          Array.isArray(pl.data)
+            ? pl.data.map((row) => ({
+                userId: row.userId,
+                team: row.teamLabel as TeamLabel,
+                position: row.position ?? null,
+                attendanceStatus: row.attendanceStatus,
+                goals: row.goals ?? 0,
+                assists: row.assists ?? 0,
+                ownGoals: row.ownGoals ?? 0,
+                saves: row.saves ?? 0,
+                rating: typeof row.rating === "number" ? row.rating : null,
+                mvp: !!row.mvp,
+                notes: row.notes ?? null,
+              }))
+            : [];
+
         return {
           matchId: p.matchId,
-          team: p.teamLabel as "A" | "B",
+          team: p.teamLabel as TeamLabel, // current user’ın takımı
           goals: p.goals ?? 0,
           assists: p.assists ?? 0,
           rating: typeof p.rating === "number" ? p.rating : null,
@@ -156,6 +200,9 @@ export async function GET(req: Request) {
           winningTeam,
           position: p.position ?? null,
           durationMin: match?.durationMin ?? 60,
+
+          // ✅ yeni alan
+          players, // maçtaki TÜM oyuncuların özet bilgisi
         };
       })
     );
@@ -200,7 +247,8 @@ export async function GET(req: Request) {
     const avgRating = sum.ratingCount ? +(sum.ratingSum / sum.ratingCount).toFixed(1) : null;
     const successRate = sum.total ? Math.round((sum.win / sum.total) * 100) : 0;
 
-    return NextResponse.json({
+    // Eğer refresh'te yeni token alındıysa cookie set ederek dönelim (opsiyonel ama doğru yaklaşım)
+    const out = NextResponse.json({
       ok: true,
       filters: { range, result, venue, page, pageSize },
       summary: {
@@ -218,6 +266,12 @@ export async function GET(req: Request) {
       hasNext: start + pageSize < total,
       hasPrev: page > 1,
     });
+
+    if (typeof (meCall as any).refreshed !== "undefined") {
+      setAuthCookies(out, (meCall as any).refreshed as AuthResponse);
+    }
+
+    return out;
   } catch (e: any) {
     dbg("error", e?.message);
     return NextResponse.json({ ok: false, message: e?.message ?? "Error" }, { status: 500 });
