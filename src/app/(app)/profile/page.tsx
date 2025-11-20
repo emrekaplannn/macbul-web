@@ -167,7 +167,7 @@ export default function ProfilePage() {
         <nav className="max-w-[1400px] mx-auto flex items-center justify-between px-6 py-4">
           <a href="/" className="text-2xl font-bold text-[#17a2b8]">MaçBul</a>
           <div className="hidden md:flex items-center gap-8">
-            <a href="/matches" className="font-medium text-gray-700 hover:text-[#17a2b8]">Maçlar</a>
+            <a href="/" className="font-medium text-gray-700 hover:text-[#17a2b8]">Maçlar</a>
             <a href="/profile" className="font-semibold text-[#17a2b8]">Profilim</a>
             <a href="/settings" className="font-medium text-gray-700 hover:text-[#17a2b8]">Ayarlar</a>
           </div>

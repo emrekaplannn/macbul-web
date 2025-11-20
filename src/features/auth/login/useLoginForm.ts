@@ -41,7 +41,7 @@ export function useLoginForm() {
       }
 
       setServerOk(true);
-      setTimeout(() => router.replace("/matches"), 600);
+      setTimeout(() => router.replace("/"), 600);
     } catch (e: any) {
       setServerError(e?.message ?? "Ağ hatası");
     } finally {

@@ -61,7 +61,7 @@ export default function VerifyEmailView() {
       const res = await verifyEmailOtp(code);
       if (res.success) {
         setOk(true);
-        setTimeout(() => router.replace("/matches"), 1200);
+        setTimeout(() => router.replace("/"), 1200);
       } else {
         throw new Error("Hatalı kod");
       }
@@ -152,7 +152,7 @@ export default function VerifyEmailView() {
             <div className="verify-success-icon">🎉</div>
             <h2>Email Doğrulandı!</h2>
             <p>Harika! Şimdi maç listesine yönlendiriliyorsun…</p>
-            <button className="verify-continue-btn" onClick={() => router.replace("/matches")}>
+            <button className="verify-continue-btn" onClick={() => router.replace("/")}>
               Devam Et →
             </button>
           </div>

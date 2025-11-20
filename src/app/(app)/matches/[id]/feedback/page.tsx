@@ -155,7 +155,7 @@ export default function MatchFeedbackPage() {
       <header className="topbar">
         <div className="topbar-inner">
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link href={`/matches/${id}`} className="logo-link">←</Link>
+            <Link href={`/past-matches`} className="logo-link">←</Link>
             <Link href="/" className="logo-link">MaçBul</Link>
           </div>
           <div className="user-info">

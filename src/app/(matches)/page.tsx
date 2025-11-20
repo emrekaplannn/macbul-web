@@ -340,6 +340,30 @@ export default function MatchesPage() {
                 >
                   Profil
                 </Link>
+                <Link
+                  role="menuitem"
+                  href="/wallet"
+                  className="menu-item"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Cüzdan
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/past-matches"
+                  className="menu-item"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Geçmiş Maçlarım
+                </Link>
+                <Link
+                  role="menuitem"
+                  href="/about"
+                  className="menu-item"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  MaçBul Nedir?
+                </Link>
                 <button
                   role="menuitem"
                   className="menu-item danger"

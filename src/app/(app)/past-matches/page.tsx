@@ -54,7 +54,7 @@ export default function PastMatchesPage() {
         <nav className="past-matches-nav">
           <a href="/" className="past-matches-logo">MaçBul</a>
           <div className="past-matches-links">
-            <a href="/matches">Maçlar</a>
+            <a href="/">Maçlar</a>
             <a href="/past-matches" className="active">Geçmişim</a>
             <a href="/profile">Profilim</a>
           </div>

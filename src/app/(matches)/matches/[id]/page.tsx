@@ -81,7 +81,7 @@ export default function MatchDetailPage() {
       <header className="topbar">
         <div className="topbar-inner">
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-            <Link href="/matches" className="logo-link">←</Link>
+            <Link href="/" className="logo-link">←</Link>
             <Link href="/" className="logo-link">MaçBul</Link>
           </div>
           <div className="user-info">
