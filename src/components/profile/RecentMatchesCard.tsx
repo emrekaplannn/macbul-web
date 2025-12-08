@@ -53,9 +53,9 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
 
               <div className="text-center w-16">
                 <div className="text-yellow-500">
-                  {"⭐".repeat(Math.max(1, Math.round((m.my.rating ?? 75) / 20)))}
+                  {"⭐".repeat(Math.max(1, Math.round(((m.my.rating ?? 75)-45) / 10)))}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">{m.my.rating ?? "-"}</div>
+                <div className="text-xs font-bold text-gray-500 mt-1">{m.my.rating ?? "-"}</div>
               </div>
             </a>
           );

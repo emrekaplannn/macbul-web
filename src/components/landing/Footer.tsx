@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="mb-foot-col">
           <h4>Hızlı Linkler</h4>
           <ul>
-            <li><a href="#hakkimizda">Hakkımızda</a></li>
-            <li><a href="#nasil-calisir">Nasıl Çalışır</a></li>
+            <li><a href="/about#hakkimizda">Hakkımızda</a></li>
+            <li><a href="/about#nasil-calisir">Nasıl Çalışır</a></li>
             <li><a href="/faq">Sıkça Sorulan Sorular</a></li>
             <li><a href="/contact">İletişim</a></li>
           </ul>

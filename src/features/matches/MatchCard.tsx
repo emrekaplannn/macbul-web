@@ -26,11 +26,9 @@ function dayAndTime(iso: string) {
 
 export default function MatchCard({
   m,
-  onJoin,
   onOpen,
 }: {
   m: MatchItem;
-  onJoin: (m: MatchItem) => void;
   onOpen?: (m: MatchItem) => void;
 }) {
   const router = useRouter();
@@ -82,14 +80,13 @@ export default function MatchCard({
             </span>
           </div>
           <button
-            className="btn-primary"
-            disabled={full}
-            onClick={(e) => {
-              e.stopPropagation();
-              onJoin(m);
-            }}
+            className={`btn-primary ${
+              m.isUserJoined ? "joined-btn" : ""
+            }`}
+            //disabled={full}
+            onClick={handleOpen}
           >
-            {full ? "Dolu" : "Katıl"}
+            { m.isUserJoined ? "✅Katıldın" : full ? "Dolu" : "Katıl"}
           </button>
         </div>
       </div>

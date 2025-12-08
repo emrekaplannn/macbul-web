@@ -11,6 +11,7 @@ import RecentMatchesCard from "@/components/profile/RecentMatchesCard";
 import PerformanceCard from "@/components/profile/PerformanceCard";
 import { ProfileApiResponse } from "@/lib/profile/types";
 import { authFetch } from "@/lib/authFetch";
+import ReferralCard from "@/components/profile/ReferralCard";
 
 // ---- Debug helpers ---------------------------------------------------------
 const DEBUG = true; // dilersen env’e bağlayabilirsin
@@ -160,7 +161,7 @@ export default function ProfilePage() {
     );
   }
 
-  // ---- Normal render
+  // ---- Normal render <ProfileTabs tabs={["📊 Genel Bakış", "💳 Cüzdan", "⚽ Maç Geçmişi", "📈 İstatistikler"]} /> 
   return (
     <div className="min-h-screen bg-[#f8f9fa]">
       <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -175,8 +176,20 @@ export default function ProfilePage() {
       </header>
 
       <main className="max-w-[1400px] mx-auto px-4 md:px-6 py-6">
-        <ProfileHeader data={data} />
-        <ProfileTabs tabs={["📊 Genel Bakış", "💳 Cüzdan", "⚽ Maç Geçmişi", "📈 İstatistikler"]} />
+        <div className="flex flex-col lg:flex-row gap-6">
+
+          {/* SOL TARAF (Header) */}
+          <div className="flex-1">
+            <ProfileHeader data={data} />
+          </div>
+
+          {/* SAĞ TARAF (Referral Card) */}
+          <div className="w-full lg:w-[360px]">
+            <ReferralCard />
+          </div>
+
+        </div>
+
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <OverallCard overall={data.stats.overall} trendDeltaLabel="+5 Son 10 Maç" />

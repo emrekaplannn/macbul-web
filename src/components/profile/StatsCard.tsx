@@ -8,7 +8,7 @@ export default function StatsCard({ stats }: Props) {
     { v: stats.goals, l: "Gol" },
     { v: stats.assists, l: "Asist" },
     { v: `${stats.avgRating ?? "-"}`, l: "Ortalama Puan" },
-    { v: stats.motm, l: "MotM" },
+    { v: stats.motm, l: "Maçın Adamı" },
   ];
 
   return (
