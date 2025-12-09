@@ -16,25 +16,45 @@ import { useAvatarUrl } from "@/features/profile/useAvatarUrl";
 
 const DEBUG = true;
 
-// ---- Basit cookie yardımcıları (sadece JS ile erişilebilen cookie’ler için)
+// ---- Türkçe esnek arama için normalize helper
+function normalizeSearch(str: string): string {
+  return str
+    .toLocaleLowerCase("tr-TR")
+    .replace(/ı/g, "i")
+    .replace(/İ/g, "i")
+    .replace(/i/g, "i") // zaten
+    .replace(/ü/g, "u")
+    .replace(/Ü/g, "u")
+    .replace(/ö/g, "o")
+    .replace(/Ö/g, "o")
+    .replace(/ğ/g, "g")
+    .replace(/Ğ/g, "g")
+    .replace(/ş/g, "s")
+    .replace(/Ş/g, "s")
+    .replace(/ç/g, "c")
+    .replace(/Ç/g, "c");
+}
+
+// ---- Basit cookie yardımcıları
 function deleteCookie(name: string, path = "/") {
   try {
-    // mümkün olan tüm kombinasyonlarla silmeye çalış
     const domains = [
       window.location.hostname,
       window.location.hostname.replace(/^www\./, ""),
     ]
       .filter(Boolean)
       .filter((v, i, a) => a.indexOf(v) === i);
+
     const opts = [
       `path=${path}`,
       `path=/;SameSite=Lax`,
       `path=/;SameSite=None;Secure`,
     ];
-    // domainli ve domainsiz dene
+
     document.cookie = `${encodeURIComponent(
       name
     )}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+
     for (const d of domains) {
       for (const o of opts) {
         document.cookie = `${encodeURIComponent(
@@ -55,24 +75,20 @@ function nukeAllClientStorage() {
   try {
     sessionStorage.clear();
   } catch {}
-  // Cookie’ler: yalnızca HttpOnly OLMAYANLAR JS ile silinebilir
+
   try {
     const all =
       document.cookie?.split(";").map((c) => c.trim().split("=")[0]) ?? [];
     const names = [...new Set(all.filter(Boolean))];
     names.forEach((n) => deleteCookie(n));
   } catch {}
-  // Cache Storage
+
   if ("caches" in window) {
     caches
       .keys()
       .then((keys) => keys.forEach((k) => caches.delete(k)))
       .catch(() => {});
   }
-  // (Opsiyonel) Service Worker oturumu (unregister, kritikse açın)
-  // if ("serviceWorker" in navigator) {
-  //   navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister()));
-  // }
 }
 
 function fromTsForFilter(date: Filters["date"]) {
@@ -114,38 +130,34 @@ export default function MatchesPage() {
     status: "all",
   });
 
-  // === Avatar menüsü durumları ===
+  // Avatar menüsü
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const avatarBtnRef = useRef<HTMLButtonElement | null>(null);
-
-  // Avatar URL (artık hook'tan)
   const avatarUrl = useAvatarUrl();
 
-  // Menüyü kapat: dışarı tıkla veya Esc
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
       if (!menuOpen) return;
       const t = e.target as Node;
-      if (
-        menuRef.current?.contains(t) ||
-        avatarBtnRef.current?.contains(t)
-      )
+      if (menuRef.current?.contains(t) || avatarBtnRef.current?.contains(t))
         return;
       setMenuOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setMenuOpen(false);
     }
+
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onKey);
+
     return () => {
       document.removeEventListener("mousedown", onDocClick);
       document.removeEventListener("keydown", onKey);
     };
   }, [menuOpen]);
 
-  // Maç listesini çek
+  // Maçları fetch etme
   useEffect(() => {
     let alive = true;
     const payload = { fromTimestamp: fromTsForFilter(filters.date) };
@@ -153,12 +165,8 @@ export default function MatchesPage() {
     (async () => {
       setLoading(true);
       setServerError(null);
-      const t0 = performance.now();
-      const label = `[matches] fetch ${new Date().toISOString()}`;
-      try {
-        DEBUG && console.groupCollapsed(label);
-        DEBUG && console.log("→ request payload", payload);
 
+      try {
         const res = await fetch("/api/matches", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -174,16 +182,6 @@ export default function MatchesPage() {
           data = { raw: text };
         }
 
-        const t1 = performance.now();
-        DEBUG &&
-          console.log(
-            "← status",
-            res.status,
-            res.statusText,
-            `(${(t1 - t0).toFixed(1)}ms)`
-          );
-        DEBUG && console.log("← response body", data);
-
         if (!res.ok) {
           if (alive) {
             setItems([]);
@@ -198,21 +196,7 @@ export default function MatchesPage() {
 
         const got: MatchItem[] = data.items ?? [];
         if (alive) setItems(got);
-
-        if (DEBUG) {
-          const dates: number[] = got.map((m: MatchItem) =>
-            new Date(m.isoDate).getTime()
-          );
-          const firstIso = dates.length
-            ? new Date(Math.min(...dates)).toISOString()
-            : "(none)";
-          const lastIso = dates.length
-            ? new Date(Math.max(...dates)).toISOString()
-            : "(none)";
-          console.log("itemCount", got.length, "first", firstIso, "last", lastIso);
-        }
       } catch (e) {
-        DEBUG && console.error("fetch error", e);
         if (alive) {
           setItems([]);
           setServerError(
@@ -220,13 +204,6 @@ export default function MatchesPage() {
           );
         }
       } finally {
-        const t2 = performance.now();
-        DEBUG &&
-          console.log(
-            "done in",
-            `${(t2 - t0).toFixed(1)}ms since request start`
-          );
-        DEBUG && console.groupEnd();
         if (alive) setLoading(false);
       }
     })();
@@ -246,25 +223,32 @@ export default function MatchesPage() {
         if (!res.ok) throw new Error(data?.message || "Cüzdan alınamadı");
 
         const dto = data.wallet as WalletDto | null;
-        if (dto && alive) {
-          setBalance(toNumber(dto.balance));
-        }
-      } catch (err) {
-        DEBUG && console.warn("[wallet] balance fetch failed:", err);
+        if (dto && alive) setBalance(toNumber(dto.balance));
+      } catch {
         if (alive) setBalance(null);
       }
     })();
+
     return () => {
       alive = false;
     };
   }, []);
 
-  // Client-side filtreler
+  // === CLIENT-SIDE SEARCH & FILTER (city + districtName + Türkçe esnek arama)
   const filtered = useMemo(() => {
     const now = new Date();
+    const qNorm = normalizeSearch(filters.q || "");
+
     const out = items.filter((m) => {
-      const hay = (m.venueName + " " + m.city).toLowerCase();
-      const okQ = hay.includes(filters.q.toLowerCase());
+      const hayRaw =
+        (m.fieldName ?? "") +
+        " " +
+        String(m.city ?? "") +
+        " " +
+        (m.districtName ?? "");
+      const hay = normalizeSearch(hayRaw);
+
+      const okQ = qNorm === "" || hay.includes(qNorm);
 
       let okWeek = true;
       if (filters.date === "week") {
@@ -282,38 +266,29 @@ export default function MatchesPage() {
 
       const okStatus =
         filters.status === "all" || m.status === filters.status;
+
       return okQ && okWeek && okPrice && okStatus;
     });
-
-    DEBUG &&
-      console.debug("[matches] client filter", {
-        q: filters.q,
-        date: filters.date,
-        price: filters.price,
-        status: filters.status,
-        before: items.length,
-        after: out.length,
-      });
 
     return out;
   }, [items, filters]);
 
+  // === Stats
   const stats = useMemo(() => {
     const open = items.filter((m) => m.status !== "full").length;
+
     const today = items.filter((m) => {
       const d = new Date(m.isoDate);
       const t = new Date();
       return d.toDateString() === t.toDateString();
     }).length;
+
     const nearby = items.filter((m) =>
-      m.city.toLowerCase().includes("istanbul")
+      String(m.city).toLowerCase().includes("istanbul")
     ).length;
+
     return { open, today, nearby };
   }, [items]);
-
-  function handleOpen(m: MatchItem) {
-    console.log("Go match detail:", m.id, m);
-  }
 
   const formatTL = (v: number) =>
     new Intl.NumberFormat("tr-TR", {
@@ -322,9 +297,12 @@ export default function MatchesPage() {
       minimumFractionDigits: 2,
     }).format(v);
 
-  // === Çıkış — TAMAMEN ÖN YÜZDE ===
   async function handleLogout() {
     await clientLogout("/login");
+  }
+
+  function handleOpen(m: MatchItem) {
+    console.log("Go match detail:", m.id, m);
   }
 
   return (
@@ -334,12 +312,13 @@ export default function MatchesPage() {
           <Link href="/" className="logo-link">
             MaçBul
           </Link>
+
           <div className="user-info" style={{ position: "relative" }}>
             <Link href="/wallet" className="balance" title="Cüzdanı aç">
               {balance !== null ? formatTL(balance) : "₺--,--"}
             </Link>
 
-            {/* Avatar butonu */}
+            {/* Avatar button */}
             <button
               ref={avatarBtnRef}
               type="button"
@@ -366,16 +345,11 @@ export default function MatchesPage() {
                   if (img.src !== fallbackAvatar.src) {
                     img.onerror = null;
                     img.src = fallbackAvatar.src;
-                    if (DEBUG)
-                      console.debug(
-                        "[avatar] img onError → fallback"
-                      );
                   }
                 }}
               />
             </button>
 
-            {/* Açılır menü */}
             {menuOpen && (
               <div
                 ref={menuRef}
@@ -391,6 +365,7 @@ export default function MatchesPage() {
                 >
                   Profil
                 </Link>
+
                 <Link
                   role="menuitem"
                   href="/wallet"
@@ -399,6 +374,7 @@ export default function MatchesPage() {
                 >
                   Cüzdan
                 </Link>
+
                 <Link
                   role="menuitem"
                   href="/past-matches"
@@ -407,6 +383,7 @@ export default function MatchesPage() {
                 >
                   Geçmiş Maçlarım
                 </Link>
+
                 <Link
                   role="menuitem"
                   href="/about"
@@ -415,6 +392,7 @@ export default function MatchesPage() {
                 >
                   MaçBul Nedir?
                 </Link>
+
                 <button
                   role="menuitem"
                   className="menu-item danger"
@@ -439,22 +417,13 @@ export default function MatchesPage() {
 
         <FiltersBar
           filters={filters}
-          onChange={(p) => {
-            DEBUG && console.log("[filters] change", p);
-            setFilters((s) => ({ ...s, ...p }));
-          }}
+          onChange={(p) => setFilters((s) => ({ ...s, ...p }))}
           view={view}
-          setView={(v) => {
-            DEBUG && console.log("[view] change", v);
-            setView(v);
-          }}
+          setView={(v) => setView(v)}
         />
 
         {serverError && (
-          <div
-            className="empty"
-            style={{ color: "#b02a37", marginTop: 12 }}
-          >
+          <div className="empty" style={{ color: "#b02a37", marginTop: 12 }}>
             <strong>Sunucu Hatası:</strong> {serverError}
           </div>
         )}
@@ -462,9 +431,7 @@ export default function MatchesPage() {
         {loading ? (
           <div className="empty">
             <div className="spinner"></div>
-            <p style={{ marginTop: 12, color: "#6c757d" }}>
-              Yükleniyor…
-            </p>
+            <p style={{ marginTop: 12, color: "#6c757d" }}>Yükleniyor…</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="empty">
@@ -479,6 +446,7 @@ export default function MatchesPage() {
           </div>
         )}
       </div>
+
       <Footer />
     </div>
   );

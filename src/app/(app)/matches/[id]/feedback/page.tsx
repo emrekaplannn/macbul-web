@@ -186,17 +186,20 @@ export default function MatchFeedbackPage() {
               <div className="match-feedback-hero-head">
                 <div>
                   <h1 className="match-feedback-hero-title">
-                    {match.fieldName || "Halı Saha"} {match.city ? `• ${match.city}` : ""}
+                    {match.fieldName || "Halı Saha"}
+                    {match.city ? ` • ${match.city}` : ""}
+                    {match.districtName ? ` / ${match.districtName}` : ""}
                   </h1>
+
                   <div className="match-feedback-meta">
                     <span>📅 <strong>{dateText}</strong></span>
                     <span>⏰ <strong>{timeText}</strong></span>
                     <span>📍 <strong>{match.fieldName || "Halı Saha"}</strong></span>
-                    {/* Skor bilgisi bu endpointte yok; varsa ileride ekleyebilirsin */}
                   </div>
                 </div>
               </div>
             </section>
+
 
             <div className="match-feedback-grid">
               {/* SOL: Oyuncu kartları */}

@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaçBul - İletişim & Destek</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #17a2b8;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background: #e8f8f9;
+            color: #17a2b8;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .page-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-color: #17a2b8;
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-desc {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        /* Main Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Contact Form Card */
+        .contact-form-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: #6c757d;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #17a2b8;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .file-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #17a2b8;
+            background: #f8f9fa;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload-text {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .file-upload-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .info-item:hover {
+            background: #e8f8f9;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            min-width: 30px;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0.2rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .info-link {
+            color: #17a2b8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .info-link:hover {
+            text-decoration: underline;
+        }
+
+        /* FAQ Card */
+        .faq-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .faq-card h3 {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 1rem 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            color: #17a2b8;
+        }
+
+        .faq-answer {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+            padding-top: 0.5rem;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 2px solid #c3e6cb;
+            margin-bottom: 1.5rem;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .success-icon {
+            font-size: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">MaçBul</a>
+            <a href="#" class="back-btn">
+                <span>←</span>
+                <span>Ana Sayfa</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>💬 İletişim & Destek</h1>
+            <p>Size nasıl yardımcı olabiliriz? Sorularınız, önerileriniz veya şikayetleriniz için buradayız.</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Destek Hizmeti</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">&lt;2 saat</div>
+                <div class="stat-label">Ortalama Yanıt</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">98%</div>
+                <div class="stat-label">Memnuniyet Oranı</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-card" onclick="selectCategory('complaint')">
+                <div class="action-icon">⚠️</div>
+                <div class="action-title">Şikayet</div>
+                <div class="action-desc">Yaşadığınız sorunları bildirin</div>
+            </div>
+            <div class="action-card" onclick="selectCategory('suggestion')">
+                <div class="action-icon">💡</div>
+                <div class="action-title">Öneri</div>
+                <div class="action-desc">Fikirlerinizi paylaşın</div>
+            </div>
+            <div class="action-card" onclick="selectCategory('technical')">
+                <div class="action-icon">🔧</div>
+                <div class="action-title">Teknik Destek</div>
+                <div class="action-desc">Teknik sorunlarınızı çözün</div>
+            </div>
+            <div class="action-card" onclick="selectCategory('other')">
+                <div class="action-icon">📧</div>
+                <div class="action-title">Genel İletişim</div>
+                <div class="action-desc">Diğer konular için</div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">✅</div>
+            <div>
+                <strong>Mesajınız başarıyla gönderildi!</strong><br>
+                En kısa sürede size geri dönüş yapacağız.
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Contact Form -->
+            <div class="contact-form-card">
+                <div class="form-header">
+                    <h2>📝 Mesaj Gönder</h2>
+                    <p>Formu doldurarak bize ulaşabilirsiniz. Tüm alanları eksiksiz doldurun.</p>
+                </div>
+
+                <form id="contactForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Ad Soyad *</label>
+                            <input type="text" id="name" required placeholder="Ahmet Yılmaz">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefon *</label>
+                            <input type="tel" id="phone" required placeholder="0532 123 45 67">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-posta *</label>
+                        <input type="email" id="email" required placeholder="ornek@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Konu Kategorisi *</label>
+                        <select id="category" required>
+                            <option value="">Kategori seçin...</option>
+                            <option value="complaint">⚠️ Şikayet</option>
+                            <option value="suggestion">💡 Öneri</option>
+                            <option value="technical">🔧 Teknik Destek</option>
+                            <option value="payment">💳 Ödeme Sorunu</option>
+                            <option value="refund">💰 İade Talebi</option>
+                            <option value="account">👤 Hesap Sorunu</option>
+                            <option value="other">📧 Diğer</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Konu Başlığı *</label>
+                        <input type="text" id="subject" required placeholder="Mesajınızın konusunu özetleyin">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Mesajınız *</label>
+                        <textarea id="message" required placeholder="Lütfen durumu detaylı bir şekilde açıklayın..." maxlength="1000" oninput="updateCharCounter()"></textarea>
+                        <div class="char-counter"><span id="charCount">0</span>/1000 karakter</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ek Dosya (Opsiyonel)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileSelect(event)">
+                            <div class="file-upload-icon">📎</div>
+                            <div class="file-upload-text" id="fileUploadText">
+                                Ekran görüntüsü veya belge yükleyin<br>
+                                <small>(Maksimum 5MB - JPG, PNG, PDF)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">📤 Mesajı Gönder</button>
+                </form>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Contact Info -->
+                <div class="info-card">
+                    <h3>📞 İletişim Bilgileri</h3>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <div class="info-label">E-posta</div>
+                            <a href="mailto:destek@macbul.com" class="info-link">destek@macbul.com</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📱</div>
+                        <div class="info-content">
+                            <div class="info-label">WhatsApp Destek</div>
+                            <a href="tel:+905321234567" class="info-link">+90 532 123 45 67</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <div class="info-label">Çalışma Saatleri</div>
+                            <div class="info-value">Hafta içi: 09:00 - 22:00<br>Hafta sonu: 10:00 - 20:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="info-card">
+                    <h3>🌐 Sosyal Medya</h3>
+                    <div class="info-item">
+                        <div class="info-icon">📘</div>
+                        <div class="info-content">
+                            <a href="#" class="info-link">Facebook</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📷</div>
+                        <div class="info-content">
+                            <a href="#" class="info-link">Instagram</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">🐦</div>
+                        <div class="info-content">
+                            <a href="#" class="info-link">Twitter/X</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="info-card">
+                    <h3>❓ Sık Sorulanlar</h3>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Şikayet süreci nasıl işler?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Şikayetinizi aldıktan sonra 24 saat içinde incelenir ve 2-3 iş günü içinde size geri dönüş yapılır.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            İade talebi nasıl yapabilirim?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            İade taleplerinizi "Konu Kategorisi" bölümünden "İade Talebi" seçerek iletebilirsiniz. İade işlemleri 5-7 iş günü içinde tamamlanır.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Önerilerim değerlendiriliyor mu?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Evet! Tüm öneriler ürün ekibimiz tarafından değerlendirilir ve uygulanan öneriler için kullanıcılara özel teşekkür rozeti verilir.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Width FAQ Card -->
+        <div class="faq-card">
+            <h3>💡 Hızlı Çözümler</h3>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Maça katılım sonrası ücret iadesi alabilir miyim?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Maçtan 24 saat öncesine kadar iptal edebilir ve tam iade alabilirsiniz. Daha sonraki iptallerde %50 iade uygulanır.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Oyuncu değerlendirmesi nasıl yapılır?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Maç bitiminden sonra tüm oyuncular birbirini değerlendirebilir. Değerlendirmeler overall puanınıza yansır ve adaletsiz puanlamalar sistem tarafından tespit edilir.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Cüzdan bakiyem neden görünmüyor?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Uygulama güncellemesi yapın ve internet bağlantınızı kontrol edin. Sorun devam ederse teknik destek ile iletişime geçin.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    Saha sahipleri nasıl başvuru yapabilir?
+                    <span>▼</span>
+                </div>
+                <div class="faq-answer">
+                    Saha sahipleri için özel işletme paneli mevcuttur. ortaklik@macbul.com adresinden başvurabilirsiniz.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Character counter
+        function updateCharCounter() {
+            const message = document.getElementById('message');
+            const charCount = document.getElementById('charCount');
+            charCount.textContent = message.value.length;
+        }
+
+        // File select handler
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const fileUploadText = document.getElementById('fileUploadText');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Dosya boyutu 5MB\'dan küçük olmalıdır!');
+                    event.target.value = '';
+                    return;
+                }
+                fileUploadText.innerHTML = `✅ ${file.name}<br><small>Yüklendi</small>`;
+            }
+        }
+
+        // Category selection from quick actions
+        function selectCategory(category) {
+            const categorySelect = document.getElementById('category');
+            categorySelect.value = category;
+            categorySelect.focus();
+            window.scrollTo({
+                top: document.getElementById('contactForm').offsetTop - 100,
+                behavior: 'smooth'
+            });
+        }
+
+        // FAQ toggle
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            const arrow = element.querySelector('span');
+            
+            // Close all other FAQs
+            document.querySelectorAll('.faq-answer').forEach(ans => {
+                if (ans !== answer) {
+                    ans.classList.remove('active');
+                }
+            });
+            document.querySelectorAll('.faq-question span').forEach(arr => {
+                if (arr !== arrow) {
+                    arr.textContent = '▼';
+                }
+            });
+            
+            // Toggle current FAQ
+            answer.classList.toggle('active');
+            arrow.textContent = answer.classList.contains('active') ? '▲' : '▼';
+        }
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const category = document.getElementById('category').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            if (!name || !phone || !email || !category || !subject || !message) {
+                alert('Lütfen tüm zorunlu alanları doldurun!');
+                return;
+            }
+            
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('show');
+            
+            // Scroll to success message
+            window.scrollTo({
+                top: successMessage.offsetTop - 100,
+                behavior: 'smooth'
+            });
+            
+            // Reset form
+            this.reset();
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('fileUploadText').innerHTML = `
+                Ekran görüntüsü veya belge yükleyin<br>
+                <small>(Maksimum 5MB - JPG, PNG, PDF)</small>
+            `;
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+            
+            console.log('Form submitted:', {
+                name, phone, email, category, subject, message
+            });
+        });
+    </script>
+</body>
+</html>

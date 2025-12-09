@@ -9,6 +9,7 @@ export type PastMatchItem = {
   time: number;
   venue: string;
   city: string;
+  districtName?: string | null;
   scoreA: number;
   scoreB: number;
   winningTeam: "A" | "B" | "DRAW";

@@ -9,10 +9,18 @@ const log = (...a: any[]) => { if (DEBUG) console.debug("[DETAIL]", ...a); };
 
 // ---- DTO'lar
 type MatchDto = {
-  id: string; organizerId: string; fieldName: string; address: string;
-  city: string; matchTimestamp: number; pricePerUser: string | number;
-  totalSlots: number; createdAt: number;
+  id: string;
+  organizerId: string;
+  fieldName: string;
+  address: string;
+  city: string;
+  districtName: string | null;  // 🔥 eklendi
+  matchTimestamp: number;
+  pricePerUser: string | number;
+  totalSlots: number;
+  createdAt: number;
 };
+
 type MatchSlotsDto = {
   matchId: string; totalSlots: number; paidCount: number; remaining: number; full: boolean;
 };

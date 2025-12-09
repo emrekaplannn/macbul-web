@@ -50,11 +50,13 @@ type MatchDto = {
   fieldName: string;
   address: string;
   city: string;
+  districtName: string | null;   // 🔥 eklendi
   matchTimestamp: number;
   pricePerUser: string | number;
   totalSlots: number;
   createdAt: number;
 };
+
 
 type TeamScoreDto = {
   matchTeamResultId: number;
@@ -305,6 +307,7 @@ async function buildOkResponse(base: string, auth: string, incomingCookie: strin
       matchId: x.match?.id || x.player.matchId,
       fieldName: x.match?.fieldName ?? "Halı Saha",
       city: x.match?.city ?? "",
+      districtName: x.match?.districtName ?? null,   // 🔥 eklendi
       time: x.match?.matchTimestamp ?? x.player.createdAt,
       scoreA: x.scoreA,
       scoreB: x.scoreB,
@@ -316,6 +319,7 @@ async function buildOkResponse(base: string, auth: string, incomingCookie: strin
         team: x.player.teamLabel,
       },
     })),
+
     trend: packed
       .map((x) => (typeof x.player.rating === "number" ? x.player.rating : null))
       .filter((v) => v !== null)

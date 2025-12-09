@@ -4,6 +4,7 @@ export type MatchDto = {
   fieldName: string;
   address: string;
   city: string;
+  districtName: string | null;
   matchTimestamp: number;
   pricePerUser: string | number;
   totalSlots: number;

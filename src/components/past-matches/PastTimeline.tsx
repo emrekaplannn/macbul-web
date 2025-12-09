@@ -13,21 +13,51 @@ export default function PastTimeline({ items }: { items: PastMatchItem[] }) {
     <div className="past-matches-timeline">
       {items.map((m) => {
         const d = new Date(m.time);
-        const resLabel = m.winningTeam === "DRAW" ? "Berabere" : (m.winningTeam === m.team ? "Kazanıldı" : "Kaybedildi");
+        const resLabel =
+          m.winningTeam === "DRAW"
+            ? "Berabere"
+            : m.winningTeam === m.team
+            ? "Kazanıldı"
+            : "Kaybedildi";
+
+        // 🔥 Şehir + ilçe birleşimi
+        const location = m.districtName
+          ? `${m.city} / ${m.districtName}`
+          : (m.city || "—");
+
         return (
-          <a key={m.matchId} href={`/matches/${m.matchId}/feedback`} className={`past-matches-timeline-item ${resultClass(m)}`}>
+          <a
+            key={m.matchId}
+            href={`/matches/${m.matchId}/feedback`}
+            className={`past-matches-timeline-item ${resultClass(m)}`}
+          >
             <div className="past-matches-match-row">
               <div className="past-matches-match-left">
                 <div className="past-matches-datetime">
-                  <span>📅 {d.toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" })}</span>
-                  <span>⏰ {d.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}</span>
+                  <span>
+                    📅{" "}
+                    {d.toLocaleDateString("tr-TR", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                  <span>
+                    ⏰{" "}
+                    {d.toLocaleTimeString("tr-TR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
                 </div>
                 <div className="past-matches-venue">{m.venue}</div>
-                <div className="past-matches-location">📍 {m.city || "—"}</div>
+                <div className="past-matches-location">📍 {location}</div>
               </div>
 
               <div className="past-matches-match-right">
-                <div className={`past-matches-result-badge ${resultClass(m)}`}>{resLabel} {m.scoreA}-{m.scoreB}</div>
+                <div className={`past-matches-result-badge ${resultClass(m)}`}>
+                  {resLabel} {m.scoreA}-{m.scoreB}
+                </div>
                 <div className="past-matches-rating">
                   <span>⭐</span>
                   <span>{m.rating ?? "-"}</span>
@@ -38,7 +68,9 @@ export default function PastTimeline({ items }: { items: PastMatchItem[] }) {
             <div className="past-matches-details-row">
               <div className="past-matches-detail">
                 <div className="label">Pozisyon</div>
-                <div className="value">{m.position ? `⚽ ${m.position}` : "—"}</div>
+                <div className="value">
+                  {m.position ? `⚽ ${m.position}` : "—"}
+                </div>
               </div>
               <div className="past-matches-detail">
                 <div className="label">Süre</div>

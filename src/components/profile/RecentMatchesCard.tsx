@@ -6,6 +6,7 @@ type RecentItem = {
   matchId: string;
   fieldName: string;
   city: string;
+  districtName?: string | null;
   time: number;
   scoreA: number;
   scoreB: number;
@@ -18,7 +19,9 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
     <div className="card-profile">
       <div className="flex items-center justify-between mb-4">
         <div className="card-title">⚽ Son Maçlar</div>
-        <a href="/past-matches" className="text-[#17a2b8] font-semibold text-sm">Tümünü Gör →</a>
+        <a href="/past-matches" className="text-[#17a2b8] font-semibold text-sm">
+          Tümünü Gör →
+        </a>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -26,10 +29,22 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
           const d = new Date(m.time);
           const day = d.getDate();
           const mon = monthAbbrTR(d);
-          const won = m.winningTeam === "DRAW" ? null : m.winningTeam === m.my.team;
+          const won =
+            m.winningTeam === "DRAW"
+              ? null
+              : m.winningTeam === m.my.team;
+
+          // 🔥 Lokasyon birleşimi
+          const location = m.districtName
+            ? `${m.city} / ${m.districtName}`
+            : (m.city || "—");
 
           return (
-            <a key={m.matchId} href={`/matches/${m.matchId}/feedback`} className="match-card">
+            <a
+              key={m.matchId}
+              href={`/matches/${m.matchId}/feedback`}
+              className="match-card"
+            >
               <div className={`match-date ${won === false ? "lost" : ""}`}>
                 <div className="text-2xl font-bold leading-none">{day}</div>
                 <div className="text-xs opacity-90">{mon}</div>
@@ -37,9 +52,12 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
 
               <div className="flex-1">
                 <div className="font-semibold text-gray-800">{m.fieldName}</div>
+
                 <div className="flex flex-wrap gap-3 text-sm text-gray-500 mt-1">
-                  <span>📍 {m.city || "—"}</span>
-                  <span>⚽ {m.my.goals} Gol, {m.my.assists} Asist</span>
+                  <span>📍 {location}</span>
+                  <span>
+                    ⚽ {m.my.goals} Gol, {m.my.assists} Asist
+                  </span>
                 </div>
 
                 <span
@@ -47,15 +65,27 @@ export default function RecentMatchesCard({ recent }: { recent: RecentItem[] }) 
                     won === null ? "draw" : won ? "win" : "lose"
                   } mt-2`}
                 >
-                  {m.winningTeam === "DRAW" ? "Berabere" : won ? "Kazanıldı" : "Kaybedildi"} {m.scoreA}-{m.scoreB}
+                  {m.winningTeam === "DRAW"
+                    ? "Berabere"
+                    : won
+                    ? "Kazanıldı"
+                    : "Kaybedildi"}{" "}
+                  {m.scoreA}-{m.scoreB}
                 </span>
               </div>
 
               <div className="text-center w-16">
                 <div className="text-yellow-500">
-                  {"⭐".repeat(Math.max(1, Math.round(((m.my.rating ?? 75)-45) / 10)))}
+                  {"⭐".repeat(
+                    Math.max(
+                      1,
+                      Math.round(((m.my.rating ?? 75) - 45) / 10)
+                    )
+                  )}
                 </div>
-                <div className="text-xs font-bold text-gray-500 mt-1">{m.my.rating ?? "-"}</div>
+                <div className="text-xs font-bold text-gray-500 mt-1">
+                  {m.my.rating ?? "-"}
+                </div>
               </div>
             </a>
           );

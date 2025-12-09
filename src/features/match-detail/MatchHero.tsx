@@ -13,7 +13,7 @@ export default function MatchHero({ match, price }: { match: MatchDto; price: nu
           <div className="match-meta">
             <div className="meta-item"><span>📅</span><span>{day}</span></div>
             <div className="meta-item"><span>⏰</span><span>{time}</span></div>
-            <div className="meta-item"><span>📍</span><span>{match.city}{match.address ? `, ${match.address}` : ""}</span></div>
+            <div className="meta-item"><span>📍</span><span>{match.districtName ? `${match.city} / ${match.districtName}` : match.city}{match.address ? `, ${match.address}` : ""}</span></div>
           </div>
         </div>
         <div className="price-box">

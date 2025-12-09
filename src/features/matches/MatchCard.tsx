@@ -42,6 +42,11 @@ export default function MatchCard({
     router.push(`/matches/${m.id}`);
   };
 
+  // Şehir + ilçe metni (örn. "İstanbul / Kadıköy")
+  const locationText = m.districtName
+    ? `${m.city} / ${m.districtName}`
+    : m.city;
+
   return (
     <div className="card" onClick={handleOpen}>
       <div className="card-header">
@@ -53,10 +58,10 @@ export default function MatchCard({
       </div>
 
       <div className="card-body">
-        <h3 className="venue">{m.venueName}</h3>
+        <h3 className="venue">{m.fieldName}</h3>
         <div className="location">
           <span>📍</span>
-          <span>{m.city}</span>
+          <span>{locationText}</span>
         </div>
 
         <div className="info-row">
@@ -80,13 +85,11 @@ export default function MatchCard({
             </span>
           </div>
           <button
-            className={`btn-primary ${
-              m.isUserJoined ? "joined-btn" : ""
-            }`}
+            className={`btn-primary ${m.isUserJoined ? "joined-btn" : ""}`}
             //disabled={full}
             onClick={handleOpen}
           >
-            { m.isUserJoined ? "✅Katıldın" : full ? "Dolu" : "Katıl"}
+            {m.isUserJoined ? "✅Katıldın" : full ? "Dolu" : "Katıl"}
           </button>
         </div>
       </div>

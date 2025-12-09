@@ -195,15 +195,17 @@ export async function GET(req: Request) {
           time,
           venue: match?.fieldName ?? "Halı Saha",
           city: match?.city ?? "",
+          districtName: match?.districtName ?? null,   // 🔥 EKLENDİ
           scoreA,
           scoreB,
           winningTeam,
           position: p.position ?? null,
           durationMin: match?.durationMin ?? 60,
 
-          // ✅ yeni alan
-          players, // maçtaki TÜM oyuncuların özet bilgisi
+          // tüm oyuncu özetleri
+          players,
         };
+
       })
     );
 
